@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -41,8 +42,7 @@ public class User {
 
 	public enum Role {
 		USER,			// used for logged-in, non-priviledged users
-		ADMIN,			// used for maximum priviledged users
-		
+		ADMIN,			// used for maximum priviledged users		
 		MODERATOR,		// remove or add roles as needed
 	}
 	
@@ -53,14 +53,14 @@ public class User {
 	private String roles; // split by ',' to separate roles
 	private byte enabled;
 	
-	private String image;
-	private String color;
 	private int elo;
-	private StClass stClass;
+//	private StClass stClass;
 	
 	// application-specific fields
-		private String firstName;
-		private String lastName;
+	private String firstName;
+	private String lastName;
+	
+	private List<Contest> contests;
 
 	/**
 	 * Checks whether this user has a given role.
@@ -152,23 +152,7 @@ public class User {
 	public static void setEncoder(BCryptPasswordEncoder encoder) {
 		User.encoder = encoder;
 	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
+	
 	public int getElo() {
 		return elo;
 	}
@@ -177,14 +161,14 @@ public class User {
 		this.elo = elo;
 	}
 
-	@ManyToOne(targetEntity = StClass.class)
-	public StClass getStClass() {
-		return stClass;
-	}
-
-	public void setStClass(StClass stClass) {
-		this.stClass = stClass;
-	}
+//	@ManyToOne(targetEntity = StClass.class)
+//	public StClass getStClass() {
+//		return stClass;
+//	}
+//
+//	public void setStClass(StClass stClass) {
+//		this.stClass = stClass;
+//	}
 
 	public String getFirstName() {
 		return firstName;
@@ -201,6 +185,26 @@ public class User {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
+	@OneToMany(targetEntity = Contest.class)
+	@JoinColumn(name = "teacher")
+	public List<Contest> getContests() {
+		return contests;
+	}
+
+	public void setContests(List<Contest> contests) {
+		this.contests = contests;
+	}
 	
-	
+	@Override
+	public String toString() {
+		StringBuilder stb = new StringBuilder();
+		
+		stb.append("Nombre: " + this.getFirstName() + "\n");
+		stb.append("Apellidos: " + this.getLastName() + "\n");
+		stb.append("Usuario: " + this.getUsername() + "\n");
+		stb.append("Elo: " + Integer.toString(this.getElo()) + "\n");
+		
+	    return stb.toString();
+	}
 }

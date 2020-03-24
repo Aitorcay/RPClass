@@ -8,10 +8,58 @@
 <body>
 	<nav th:fragment="nav">
 		<a class="logo" href="" th:href="@{/}"></a>
-		<span class="sitename">Plantilla de IW</span>
+		<span class="sitename">RPC - Role Playing Class</span>
+
+		<div th:if="${session.u}">			
+			<div th:if="${session.u.hasRole('ADMIN')}">	
+				<form th:action="@{/admin/{id}/class(id=${session.u.id})}">
+					<button type="submit">Mis clases</button>
+  				</form>	
+  			</div>			
+		</div>
+
+		<div th:if="${session.u}">			
+			<div th:if="${session.u.hasRole('ADMIN')}">	
+				<form th:action="@{/admin/{id}/contest(id=${session.u.id})}">
+					<button type="submit">Mis pruebas</button>
+  				</form>  
+  			</div>				
+		</div>
+
+		<div th:if="${session.u}">			
+			<div th:if="${session.u.hasRole('ADMIN')}">	
+				<form th:action="@{/admin/{id}/play(id=${session.u.id})}">
+					<button type="submit">Jugar</button>
+  				</form>		
+			</div>					
+		</div>
+
+		<div th:if="${session.u}">			
+			<div th:if="${session.u.hasRole('USER')}">	
+				<form th:action="@{/user/{id}/profile(id=${session.u.id})}">
+					<button type="submit">Mi perfil</button>
+  				</form>	
+  			</div>			
+		</div>
+
+		<div th:if="${session.u}">			
+			<div th:if="${session.u.hasRole('USER')}">	
+				<form th:action="@{/user/{id}/team(id=${session.u.id})}">
+					<button type="submit">Mi equipo</button>
+  				</form>  
+  			</div>				
+		</div>
+
+		<div th:if="${session.u}">			
+			<div th:if="${session.u.hasRole('USER')}">	
+				<form th:action="@{/user/{id}/rankings(id=${session.u.id})}">
+					<button type="submit">Rankings</button>
+  				</form>		
+			</div>					
+		</div>
 
 		<div class="logx" th:if="${session.u}">			
-			<a th:if="${session.u.hasRole('ADMIN')}" th:href="@{/admin/}">admin</a>
+			<a th:if="${session.u.hasRole('ADMIN')}" th:href="@{/admin/{id}(id=${session.u.id})}">admin</a>
 			<a th:if="${session.g} neq null" th:href="@{/clase/}">clase</a>
 			<a th:href="@{/logout}" href="/logout">logout</a>
 			<a th:href="@{/user/{id}(id=${session.u.id})}">
