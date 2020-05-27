@@ -59,14 +59,14 @@
 
 		<div class="container">
 
-			<div style="flex:0 1 auto;" class="scroll">		
+			<div style="flex:0.2 1 0;" class="scroll">		
 				<form style="margin:5px" th:if="${contestList}" th:each="c: ${contestList}" 
 						th:action="@{/admin/{id}/contest/{contestId}(id=${session.u.id},contestId=${c.id})}">
 					<button type="submit" th:text="${c.stClass.name} + ' - ' + ${c.name}">Concurso</button>
   				</form>					
 			</div>
 
-			<div th:if=${contest} style="flex:1 auto;text-align:center;" class="scroll">
+			<div th:if=${contest} style="flex:0.35 1 0;text-align:center;" class="scroll">
 				<h2 style="text-align:center;" th:text="${contest.name}"></h2>
 
 				<div thi:if="${contest.questions}" th:each="q: ${contest.questions}" 
@@ -83,7 +83,7 @@
 
 			</div>	
 
-			<div th:if=${contest} style="display:flex;flex-direction:column;flex:0 1 auto;text-align:center;padding:0px" class="scroll" >	
+			<div th:if=${contest} style="display:flex;flex-direction:column;flex:0.45 1 0;text-align:center;padding:0px" class="scroll" >	
 				<div align="left" style="display:block">
 
 					<nav th:if="${contest.complete}" style="margin-left: 20px">

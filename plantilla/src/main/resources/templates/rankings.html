@@ -36,7 +36,7 @@
   				</form>					
 			</div>
 
-			<div th:if="${contestList} AND ${stClass}" style="flex:0 1 auto;" class="scroll">	
+			<div th:if="${contestList} AND ${stClass}" style="flex:0.2 1 0;" class="scroll">	
 
 				<form style="margin:5px" th:action="@{/user/{id}/rankings/{classId}(id=${session.u.id},classId=${stClass.id})}">
 					<button type="submit">Global</button>
@@ -48,7 +48,7 @@
   				</form>					
 			</div>
 
-			<div th:if="${rankingUser} AND ${positionUser}" style="flex:1;text-align: center" class="scroll"> 
+			<div th:if="${rankingUser} AND ${positionUser}" style="flex:0.45 1 0;text-align: center" class="scroll"> 
 
 				<h2 style="margin-bottom:10px;">Ranking de estudiantes</h2>
 
@@ -60,7 +60,7 @@
 							<td th:text="${positionUser[iStatR.index]}"></td>
 							<td th:text="${ru.username}"></td>
 							<td> - </td>
-							<td th:text="${ru.firstName} + ${ru.lastName}"></td>
+							<td th:text="${ru.firstName} + ' ' + ${ru.lastName}"></td>
 							<td> - </td>
 							<td th:text="${ru.elo}"></td>
 						</tr>
@@ -69,7 +69,7 @@
 
 			</div>
 
-			<div th:if="${rankingTeam} AND ${positionTeam}" style="flex:1;text-align: center" class="scroll"> 
+			<div th:if="${rankingTeam} AND ${positionTeam}" style="flex:0.35 1 0;text-align: center" class="scroll"> 
 
 				<h2 style="margin-bottom:10px;">Ranking de equipos</h2>
 

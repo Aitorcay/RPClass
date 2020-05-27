@@ -28,14 +28,14 @@
 
 		<div class="container">
 			
-			<div style="flex:0 1 auto;margin:20px" class="scroll">		
+			<div style="flex:0.2 1 0;margin:20px" class="scroll">		
 				<form style="margin:5px" th:if="${classList}" th:each="c: ${classList}" 
 						th:action="@{/admin/{id}/class/{classId}(id=${session.u.id},classId=${c.id})}">
 					<button type="submit" th:text="${c.name}">Mis clases</button>
   				</form>					
 			</div>
 
-			<div style="flex:0 1 auto;" th:if="${stClass}" class="scroll">
+			<div style="flex:0.25 1 0;" th:if="${stClass}" class="scroll">
 
 				<h3 style="text-align:center;" th:text="${stClass.name}">Clase de prueba</h3>
 	
@@ -58,7 +58,7 @@
 
 			</div>
 
-			<div style="flex:1;" th:if="${teams}" class="scroll">
+			<div style="flex:0.3 1 0;" th:if="${teams}" class="scroll">
 
 				<h3 style="text-align:center;">Lista de equipos</h3>
 
@@ -72,7 +72,7 @@
 
 			</div>
 
-			<div th:if="${users}" style="flex:1;" class="scroll">
+			<div th:if="${users}" style="flex:0.55 1 0;" class="scroll">
 
 				<h3 style="text-align:center;">Lista de equipos</h3>
 
@@ -98,7 +98,7 @@
 
 			</div>
 
-			<div th:if="${stClass} AND ${students}" style="flex:1;" class="scroll">
+			<div th:if="${stClass} AND ${students}" style="flex:0.25 1 0;" class="scroll">
 
 				<h3 style="text-align:center;">Lista de concursos</h3>
 
