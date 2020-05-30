@@ -22,6 +22,8 @@ import es.ucm.fdi.iw.model.User;
 public class ClassFileReader {
 	
 	private static final Logger log = LogManager.getLogger(ClassFileReader.class);
+	
+	private static final int TOKEN_LENGTH = 7;
 
 	/**
 	 * Procesa la información de un fichero JSON y crea una nueva clase
@@ -51,9 +53,9 @@ public class ClassFileReader {
 				student.setRoles("USER");
 				student.setFirstName(jStudent.getString("nombre"));
 				student.setLastName(jStudent.getString("apellidos"));
-				student.setUsername("ST-" + String.format("%03d" , i+1));
-				student.setPassword(String.format("%03d" , i+1));
-				student.setToken(String.format("%03d" , i+1));
+				student.createAndSetRandomToken(TOKEN_LENGTH);
+				student.setUsername("ST-" + student.getToken());
+				student.setPassword(student.getToken());
 				student.setElo(1000);
 				student.setCorrect(0);
 				student.setPerfect(0);
