@@ -207,7 +207,7 @@ INSERT INTO achievement (id, goal_id, level, progress, student_id, team_id) VALU
 
 -- Creación de un concurso
 
-INSERT INTO contest (id, enabled, complete, checked, name) VALUES (1, 0, 0, 0, 'Mi primer concurso');
+INSERT INTO contest (id, enabled, complete, checked, name, start_date) VALUES (1, 0, 0, 0, 'Mi primer concurso', TIMESTAMP '2020-05-26 00:00:00');
 
 UPDATE contest SET teacher_id=1 where id=1;
 UPDATE contest SET st_class_id=1 WHERE id=1;
