@@ -157,8 +157,8 @@ public class UserController {
 	public String postPhoto(
 			HttpServletResponse response,
 			@RequestParam("photo") MultipartFile photo,
-			@PathVariable("id") String id, Model model, HttpSession session) throws IOException {
-		User target = entityManager.find(User.class, Long.parseLong(id));
+			@PathVariable("id") long id, Model model, HttpSession session) throws IOException {
+		User target = entityManager.find(User.class, id);
 		model.addAttribute("user", target);
 		
 		// check permissions
@@ -171,7 +171,7 @@ public class UserController {
 		}
 		
 		log.info("Updating photo for user {}", id);
-		File f = localData.getFile("user", id);
+		File f = localData.getFile("user", Long.toString(id));
 		if (photo.isEmpty()) {
 			log.info("failed to upload photo: emtpy file?");
 		} else {
@@ -184,6 +184,6 @@ public class UserController {
 			}
 			log.info("Successfully uploaded photo for {} into {}!", id, f.getAbsolutePath());
 		}
-		return "profile";
+		return getUser(id, model, session);
 	}	
 }

@@ -158,10 +158,10 @@ public class AdminClassController {
 			}
 			log.info("Creando fichero QR de la clase");
 			String qrFile = PdfGenerator.generateQrClassFile(stClass.getStudents(), stClass);				
-			uploadToTemp(qrFile);
+			uploadToTemp(qrFile, Long.toString(classId));
 	    }
 		
-		File f = localData.getFile("qrcodes", ConstantsFromFile.QR_FILE + "." + ConstantsFromFile.PDF);
+		File f = localData.getFile("qrcodes\\" + Long.toString(classId) , ConstantsFromFile.QR_FILE + "." + ConstantsFromFile.PDF);
 		InputStream in = new BufferedInputStream(new FileInputStream(f));
 		return new StreamingResponseBody() {
 			@Override
@@ -446,12 +446,12 @@ public class AdminClassController {
 	 * @param tempFile		fichero PDF con la información de una clase
 	 * @throws IOException
 	 */
-	private void uploadToTemp(String tempFile) throws IOException {
+	private void uploadToTemp(String tempFile, String id) throws IOException {
 		FileInputStream instream = null;
 		FileOutputStream outstream = null;
 	 
 	    File infile = new File(tempFile);
-	    File outfile = localData.getFile("qrcodes", ConstantsFromFile.QR_FILE + "." + ConstantsFromFile.PDF);
+	    File outfile = localData.getFile("qrcodes\\" + id, ConstantsFromFile.QR_FILE + "." + ConstantsFromFile.PDF);
 
 	    instream = new FileInputStream(infile);
 	    outstream = new FileOutputStream(outfile);

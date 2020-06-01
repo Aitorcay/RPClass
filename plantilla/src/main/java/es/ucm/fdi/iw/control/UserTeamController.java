@@ -122,9 +122,9 @@ public class UserTeamController {
 	public String postTeamPhoto(
 			HttpServletResponse response,
 			@RequestParam("photo") MultipartFile photo,
-			@PathVariable("id") String id, @PathVariable("teamId") String teamId, 
+			@PathVariable("id") long id, @PathVariable("teamId") String teamId, 
 			Model model, HttpSession session) throws IOException {
-		User target = entityManager.find(User.class, Long.parseLong(id));
+		User target = entityManager.find(User.class, id);
 		model.addAttribute("user", target);
 		
 		StTeam team = entityManager.find(StTeam.class, Long.parseLong(teamId));
@@ -153,6 +153,6 @@ public class UserTeamController {
 			}
 			log.info("Successfully uploaded photo for {} into {}!", id, f.getAbsolutePath());
 		}
-		return "team";
+		return team(id, model, session);
 	}
 }

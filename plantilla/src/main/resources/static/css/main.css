@@ -28,16 +28,16 @@ nav>*{
 	margin: 5px;
 }
 .sitename {
-	font-size: 240%;
+	font-size: 200%;
 	font-weight: bold;
 }
 .logo {
-	background-image: url(../img/crown.png);
+	background-image: url(../img/podio.png);
 	background-size: contain;
 	background-repeat:no-repeat;
 	background-position: center center;
-	width: 64px;
-	height: 64px;
+	width: 48px;
+	height: 48px;
 }
 .gold {
 	background-image: url(../img/gold.png);
