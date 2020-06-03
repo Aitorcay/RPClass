@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import es.ucm.fdi.iw.constants.Constants;
 import es.ucm.fdi.iw.model.Achievement;
 import es.ucm.fdi.iw.model.Answer;
 import es.ucm.fdi.iw.model.Contest;
-import es.ucm.fdi.iw.model.Question;
 import es.ucm.fdi.iw.model.Result;
 import es.ucm.fdi.iw.model.StTeam;
 import es.ucm.fdi.iw.model.User;
@@ -52,15 +52,15 @@ public class AutoCorrector {
 			result.getAnswers().add(answer);
 			
 			score = answer.getScore();
-			totalScore += score * 10;
+			totalScore += score * Constants.Q_SCORE;
 			if (score == 1) {
 				correct++;
 			}
 		}
 		
-		if (totalScore >= answerList.size() * 10 / 2) {
+		if (totalScore >= answerList.size() * Constants.Q_SCORE * Constants.SCORE_LIMIT) {
 			passed = true;
-			if (totalScore >= answerList.size() * 10) {
+			if (totalScore >= answerList.size() * Constants.Q_SCORE) {
 				perfect = true;
 			}
 		}
@@ -70,7 +70,7 @@ public class AutoCorrector {
 		result.setPerfect(perfect);
 		result.setScore(Math.round(totalScore));
 		
-		if (user.getRoles().equals("USER")) {
+		if (user.getRoles().equals(Constants.USER_ROLE)) {
 			user.setElo(user.getElo() + (int)Math.round(totalScore));
 			user.setCorrect(user.getCorrect() + correct);
 			user.setPassed(user.getPassed() + 1);
@@ -139,7 +139,7 @@ public class AutoCorrector {
 		String[] levels;
 		
 		for (Achievement a: achievements) {
-			levels = a.getGoal().getLevels().split(",");
+			levels = a.getGoal().getLevels().split(Constants.LEVEL_SEPARATOR);
 			
 			switch(a.getGoal().getKey()) {
 				case("CORRECT"):

@@ -11,7 +11,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import es.ucm.fdi.iw.constants.ConstantsFromFile;
+import es.ucm.fdi.iw.constants.Constants;
+import es.ucm.fdi.iw.constants.ConstantsPdfFile;
 import es.ucm.fdi.iw.model.Answer;
 import es.ucm.fdi.iw.model.Contest;
 import es.ucm.fdi.iw.model.Question;
@@ -36,12 +37,12 @@ public class ContestFileReader {
 		
 		try {
 			JSONObject jContest = new JSONObject(jsonContest);
-			contest.setName(jContest.getString("nombreConcurso"));
+			contest.setName(jContest.getString(Constants.NOMBRE_CONCURSO));
 			contest.setEnabled((byte) 0);
 			contest.setComplete((byte) 0);
 			contest.setChecked((byte)0);
 			
-			JSONArray jQuestionsList = jContest.getJSONArray("preguntas");
+			JSONArray jQuestionsList = jContest.getJSONArray(Constants.PREGUNTAS);
 			JSONObject jQuestion;
 
 			List<Question> questionList = new ArrayList<>();
@@ -56,19 +57,19 @@ public class ContestFileReader {
 			for (int i = 0; i < jQuestionsList.length(); i++) {
 				jQuestion = jQuestionsList.getJSONObject(i);
 				question = new Question();
-				question.setText(jQuestion.getString("enunciado"));
+				question.setText(jQuestion.getString(Constants.ENUNCIADO));
 				question.setContest(contest);
 				
 				answerList = new ArrayList<>();
 				empty = new Answer();
 				empty.setQuestion(question);
-				empty.setText("Sin responder");
+				empty.setText(Constants.NO_ANSWER);
 				empty.setScore(0);
 				answerList.add(empty);
 				
-				answerInput = jQuestion.getJSONArray("respuestas");
+				answerInput = jQuestion.getJSONArray(Constants.RESPUESTAS);
 				for(int j = 0; j < answerInput.length(); j++) {
-					answerData = answerInput.getString(j).split(ConstantsFromFile.SEPARATOR);
+					answerData = answerInput.getString(j).split(Constants.SEPARATOR);
 					log.info(answerInput);
 					answer = new Answer();
 					answer.setQuestion(question);

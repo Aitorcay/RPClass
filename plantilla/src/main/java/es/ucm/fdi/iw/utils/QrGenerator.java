@@ -24,7 +24,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import es.ucm.fdi.iw.LocalData;
-import es.ucm.fdi.iw.constants.ConstantsFromFile;
+import es.ucm.fdi.iw.constants.ConstantsPdfFile;
 import es.ucm.fdi.iw.model.User;
 
 /**
@@ -46,16 +46,16 @@ public class QrGenerator {
 	 */
 	public static void generateQrCode(User user) throws UnknownHostException {
 		InetAddress inetAddress = InetAddress.getLocalHost();		
-		String url = "http://" + inetAddress.getHostAddress() + ":" +ConstantsFromFile.PORT + "/token/" + user.getToken();
-		int size = ConstantsFromFile.QR_IMG_SIZE;
-		String fileType = ConstantsFromFile.PNG;
+		String url = "http://" + inetAddress.getHostAddress() + ":" +ConstantsPdfFile.PORT + "/token/" + user.getToken();
+		int size = ConstantsPdfFile.QR_IMG_SIZE;
+		String fileType = ConstantsPdfFile.PNG;
 		
-		File directory = new File(ConstantsFromFile.QR_DIR);
+		File directory = new File(ConstantsPdfFile.QR_DIR);
 	    if (! directory.exists()){
 	        directory.mkdir();
 	    }
 	    
-	    String QrPath = ConstantsFromFile.QR_DIR + ConstantsFromFile.QR_IMG + user.getUsername() + "." + ConstantsFromFile.PNG;
+	    String QrPath = ConstantsPdfFile.QR_DIR + ConstantsPdfFile.QR_IMG + user.getUsername() + "." + ConstantsPdfFile.PNG;
 		File myFile = new File(QrPath);
 		
 		try {

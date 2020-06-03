@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import es.ucm.fdi.iw.constants.Constants;
+import es.ucm.fdi.iw.constants.ConstantsPdfFile;
 import es.ucm.fdi.iw.model.StClass;
 import es.ucm.fdi.iw.model.User;
 
@@ -22,8 +24,6 @@ import es.ucm.fdi.iw.model.User;
 public class ClassFileReader {
 	
 	private static final Logger log = LogManager.getLogger(ClassFileReader.class);
-	
-	private static final int TOKEN_LENGTH = 7;
 
 	/**
 	 * Procesa la información de un fichero JSON y crea una nueva clase
@@ -37,11 +37,11 @@ public class ClassFileReader {
 				
 		try {
 			JSONObject jClass = new JSONObject(jsonClass);
-			stClass.setName(jClass.getString("nombreClase"));
+			stClass.setName(jClass.getString(Constants.NOMBRE_CLASE));
 			stClass.setTeamList(new ArrayList<>());
 			stClass.setClassContest(new ArrayList<>());
 			
-			JSONArray jStudentsList = jClass.getJSONArray("alumnos");
+			JSONArray jStudentsList = jClass.getJSONArray(Constants.ALUMNOS);
 			JSONObject jStudent;
 			List<User> studentList = new ArrayList<>();
 			
@@ -50,11 +50,11 @@ public class ClassFileReader {
 				student= new User();
 				
 				student.setEnabled((byte) 1);
-				student.setRoles("USER");
-				student.setFirstName(jStudent.getString("nombre"));
-				student.setLastName(jStudent.getString("apellidos"));
-				student.createAndSetRandomToken(TOKEN_LENGTH);
-				student.setUsername("ST-" + student.getToken());
+				student.setRoles(Constants.USER_ROLE);
+				student.setFirstName(jStudent.getString(Constants.NOMBRE));
+				student.setLastName(jStudent.getString(Constants.APELLIDOS));
+				student.createAndSetRandomToken(Constants.TOKEN_LENGTH);
+				student.setUsername("ST-" + String.format("%03d" , i));
 				student.setPassword(student.getToken());
 				student.setElo(1000);
 				student.setCorrect(0);

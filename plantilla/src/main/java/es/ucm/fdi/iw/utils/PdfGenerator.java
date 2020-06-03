@@ -24,7 +24,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import es.ucm.fdi.iw.constants.ConstantsFromFile;
+import es.ucm.fdi.iw.constants.ConstantsPdfFile;
 import es.ucm.fdi.iw.model.StClass;
 import es.ucm.fdi.iw.model.User;
 
@@ -49,38 +49,38 @@ public class PdfGenerator {
 	 */
 	public static String generateQrClassFile(List<User> users, StClass stClass) throws DocumentException, MalformedURLException, IOException {
 		
-		File directory = new File(ConstantsFromFile.QR_DIR);
+		File directory = new File(ConstantsPdfFile.QR_DIR);
 	    if (! directory.exists()){
 	        directory.mkdir();
 	    }
 		
-		String qrFile = ConstantsFromFile.QR_DIR + ConstantsFromFile.QR_FILE + "." + ConstantsFromFile.PDF;
+		String qrFile = ConstantsPdfFile.QR_DIR + ConstantsPdfFile.QR_FILE + "." + ConstantsPdfFile.PDF;
 		Document document = new Document();
 		PdfWriter.getInstance(document, new FileOutputStream(qrFile));
-		Font font = FontFactory.getFont(FontFactory.COURIER, ConstantsFromFile.QR_FONT_SIZE, BaseColor.BLACK);
+		Font font = FontFactory.getFont(FontFactory.COURIER, ConstantsPdfFile.QR_FONT_SIZE, BaseColor.BLACK);
 		PdfPTable table;
 		
 		document.open();				
 
 		int numPages;
-		if (users.size() % ConstantsFromFile.NUM_ROWS == 0) {
-			numPages = users.size() / ConstantsFromFile.NUM_ROWS;
+		if (users.size() % ConstantsPdfFile.NUM_ROWS == 0) {
+			numPages = users.size() / ConstantsPdfFile.NUM_ROWS;
 		} else {
-			numPages = (users.size() / ConstantsFromFile.NUM_ROWS) + 1;
+			numPages = (users.size() / ConstantsPdfFile.NUM_ROWS) + 1;
 		}
 
 		for (int i=0; i < numPages; i++) {
-			for (int j=0; j < Math.min(ConstantsFromFile.NUM_ROWS, users.size()-i*ConstantsFromFile.NUM_ROWS); j++) {
-				int cellCount = ConstantsFromFile.NUM_ROWS*i+j;
+			for (int j=0; j < Math.min(ConstantsPdfFile.NUM_ROWS, users.size()-i*ConstantsPdfFile.NUM_ROWS); j++) {
+				int cellCount = ConstantsPdfFile.NUM_ROWS*i+j;
 				User u = users.get(cellCount);
 				String name = u.getFirstName() + ",\n" + u.getLastName();
-				String img = ConstantsFromFile.QR_DIR + ConstantsFromFile.QR_IMG + u.getUsername() + "." + ConstantsFromFile.PNG;
+				String img = ConstantsPdfFile.QR_DIR + ConstantsPdfFile.QR_IMG + u.getUsername() + "." + ConstantsPdfFile.PNG;
 				
 				//Para cada usuario se incluye: nombre y apellidos, nombre de usuario y código QR de acceso
 				log.info("Creando QR para el usuario {}", cellCount);
-				table = new PdfPTable(ConstantsFromFile.NUM_COLS);
-				table.getDefaultCell().setFixedHeight(ConstantsFromFile.CELL_H);
-				table.setWidths(new float[] {ConstantsFromFile.NAME_W, ConstantsFromFile.USER_W, ConstantsFromFile.QR_W});
+				table = new PdfPTable(ConstantsPdfFile.NUM_COLS);
+				table.getDefaultCell().setFixedHeight(ConstantsPdfFile.CELL_H);
+				table.setWidths(new float[] {ConstantsPdfFile.NAME_W, ConstantsPdfFile.USER_W, ConstantsPdfFile.QR_W});
 				table.addCell(new Phrase(name, font));
 				table.addCell(new Phrase(u.getUsername(), font));
 				QrGenerator.generateQrCode(u);

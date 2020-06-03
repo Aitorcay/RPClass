@@ -34,7 +34,8 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import com.itextpdf.text.DocumentException;
 
 import es.ucm.fdi.iw.LocalData;
-import es.ucm.fdi.iw.constants.ConstantsFromFile;
+import es.ucm.fdi.iw.constants.Constants;
+import es.ucm.fdi.iw.constants.ConstantsPdfFile;
 import es.ucm.fdi.iw.model.Achievement;
 import es.ucm.fdi.iw.model.Answer;
 import es.ucm.fdi.iw.model.Contest;
@@ -67,8 +68,6 @@ public class AdminClassController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	private static final int TOKEN_LENGTH = 7;
 	
 	/**
 	 * Vista con las clases creadas por un profesor/a
@@ -153,7 +152,7 @@ public class AdminClassController {
 		} else {
 			log.info("Generando tokens para alumnos");
 			for (User u : stClass.getStudents()) {
-				u.createAndSetRandomToken(TOKEN_LENGTH);
+				u.createAndSetRandomToken(Constants.TOKEN_LENGTH);
 				u.setPassword(passwordEncoder.encode(u.getToken()));
 			}
 			log.info("Creando fichero QR de la clase");
@@ -161,7 +160,7 @@ public class AdminClassController {
 			uploadToTemp(qrFile, Long.toString(classId));
 	    }
 		
-		File f = localData.getFile("qrcodes\\" + Long.toString(classId) , ConstantsFromFile.QR_FILE + "." + ConstantsFromFile.PDF);
+		File f = localData.getFile("qrcodes\\" + Long.toString(classId) , ConstantsPdfFile.QR_FILE + "." + ConstantsPdfFile.PDF);
 		InputStream in = new BufferedInputStream(new FileInputStream(f));
 		return new StreamingResponseBody() {
 			@Override
@@ -277,7 +276,7 @@ public class AdminClassController {
 
 			//Asignación de los alumnos a los equipos
 			for (int j = 0; j < teamComp.size(); j++) {
-				studentInfo = teamComp.get(j).split(ConstantsFromFile.SEPARATOR);
+				studentInfo = teamComp.get(j).split(Constants.SEPARATOR);
 				userInfo = studentInfo[0].split(" ");
 				teamIndex = Integer.valueOf(studentInfo[1]);
 				student = entityManager.createNamedQuery("User.userInClass", User.class)
@@ -451,7 +450,7 @@ public class AdminClassController {
 		FileOutputStream outstream = null;
 	 
 	    File infile = new File(tempFile);
-	    File outfile = localData.getFile("qrcodes\\" + id, ConstantsFromFile.QR_FILE + "." + ConstantsFromFile.PDF);
+	    File outfile = localData.getFile("qrcodes\\" + id, ConstantsPdfFile.QR_FILE + "." + ConstantsPdfFile.PDF);
 
 	    instream = new FileInputStream(infile);
 	    outstream = new FileOutputStream(outfile);
