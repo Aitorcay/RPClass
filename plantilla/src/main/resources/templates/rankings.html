@@ -29,7 +29,7 @@
 
 		<div th:if="(${session.u.id} eq ${user.id}) or ${user.hasRole('ADMIN')}" class="container">
 
-			<div th:if="${classList}" style="flex:0 1 auto;" class="scroll">		
+			<div th:if="${classList}" style="flex:0.2 1 auto;" class="scroll">		
 				<form style="margin:5px" th:each="c: ${classList}" 
 						th:action="@{/admin/{id}/rankings/{classId}(id=${session.u.id},classId=${c.id})}">
 					<button type="submit" th:text="${c.name}">Clase</button>

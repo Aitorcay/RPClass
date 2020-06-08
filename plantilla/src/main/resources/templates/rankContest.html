@@ -39,14 +39,14 @@
   				</form>					
 			</div>
 
-			<div th:if="${contestList} AND ${session.u.hasRole('ADMIN')}" style="flex:0.45 1 0;" class="scroll">		
+			<div th:if="${contestList} AND ${session.u.hasRole('ADMIN')}" style="flex:0.2 1 0;" class="scroll">		
 				<form style="margin:5px" th:if="${contestList}" th:each="c: ${contestList}" 
 						th:action="@{/admin/{id}/contest/{contestId}(id=${session.u.id},contestId=${c.id})}">
 					<button type="submit" th:text="${c.stClass.name} + ' - ' + ${c.name}">Concurso</button>
   				</form>					
 			</div>
 
-			<div th:if="${results} AND ${positionUser}" style="flex:0.35 1 0;text-align: center" class="scroll"> 
+			<div th:if="${results} AND ${positionUser}" style="flex:0.45 1 0;text-align: center" class="scroll"> 
 
 				<h2 style="margin-bottom:10px;">Ranking de estudiantes</h2>
 
@@ -67,7 +67,7 @@
 
 			</div>
 
-			<div th:if="${rankingTeam} AND ${positionTeam}" style="flex:1;text-align: center" class="scroll"> 
+			<div th:if="${rankingTeam} AND ${positionTeam}" style="flex:0.35 1 0;text-align: center" class="scroll"> 
 
 				<h2 style="margin-bottom:10px;">Ranking de equipos</h2>
 
