@@ -1,0 +1,14 @@
+{
+	"nombreConcurso": "escribe aqui el nombre de la prueba",
+	"preguntas": [
+		{
+			"enunciado": "escribe aqui el enunciado de la pregunta",
+			"respuestas": [
+				"escribe aqui una opcion-->escribe aquí el porcentaje de puntuación (un valor entre -1 y 1)",
+				"escribe aqui una opcion-->escribe aquí el porcentaje de puntuación (un valor entre -1 y 1)",
+				"escribe aqui una opcion-->escribe aquí el porcentaje de puntuación (un valor entre -1 y 1)",
+				"escribe aqui una opcion-->escribe aquí el porcentaje de puntuación (un valor entre -1 y 1)"
+			]
+		}
+	]
+}
