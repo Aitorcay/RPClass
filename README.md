@@ -9,8 +9,7 @@ Los profesores podrán añadir recursos (clases y pruebas), mediante la carga de
 
 Los estudiantes participarán en las pruebas y en función de su desempeño incrementarán su puntuación, desbloqueando logros y aportando su contribución individual al progreso del equipo al que pertenezcan. Cada prueba contará con su propia clasificación de alumnos y grupos y otorgará recompensas en función de la posición alcanzada. El progreso conseguido a lo largo de la utilización de la plataforma se recogerá en un ranking global, el objetivo principal de la competición.
 
-Para probar el sistema se incluye en el proyecto el siguiente contenido por defecto (RPClass/plantilla/src/main/resources/
-import.sql):
+Para probar el sistema se incluye en el proyecto el siguiente contenido por defecto (fichero [import.sql](https://github.com/Aitorcay/RPClass/blob/master/plantilla/src/main/resources/import.sql)):
 
     - Un perfil de profesor
     - Una clase con 6 alumnos repartidos en 3 equipos
