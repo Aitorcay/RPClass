@@ -21,15 +21,13 @@
 		
 		<nav style="background-color: rgba(255, 255, 255, 0.75);">
 
-			<h1 style="margin-left:25px;margin-right:25px;">Clasificación</h1><div th:if="${session.u}">		
-				
-		</div>
+			<h1 style="margin-left:25px;margin-right:25px;">Clasificación</h1>
 	
 		</nav>
 
 		<div th:if="(${session.u.id} eq ${user.id}) or ${user.hasRole('ADMIN')}" class="container">
 
-			<div th:if="${classList}" style="flex:0.2 1 auto;" class="scroll">		
+			<div th:if="${classList}" style="flex:0.2 1 0;" class="scroll">		
 				<form style="margin:5px" th:each="c: ${classList}" 
 						th:action="@{/admin/{id}/rankings/{classId}(id=${session.u.id},classId=${c.id})}">
 					<button type="submit" th:text="${c.name}">Clase</button>

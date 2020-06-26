@@ -34,7 +34,7 @@
 
 		<div th:if="(${session.u.id} eq ${user.id}) or ${user.hasRole('ADMIN')}" class="container">
 
-			<div style="flex:0 1 auto;" class="scroll"> 
+			<div style="flex:0.25 1 0;" class="scroll"> 
 
 				<h3 style="text-align:center;margin-bottom:15px">Miembros del equipo</h3>
 				<table th:if="${members}" class="adminTable">
@@ -46,7 +46,7 @@
 
 			</div>
 
-			<div style="flex:0 1 auto;" class="scroll"> 
+			<div style="flex:0.5 1 0;" class="scroll"> 
 
 				<h3 h3 style="text-align:center;margin-bottom:15px">Logros</h3>
 
@@ -58,7 +58,7 @@
 
 			</div>
 
-			<div style="flex:0 1 auto;" class="scroll"> 
+			<div style="flex:0.25 1 0;" class="scroll"> 
 
 				<h3 h3 style="text-align:center;margin-bottom:15px">Trofeos</h3>
 

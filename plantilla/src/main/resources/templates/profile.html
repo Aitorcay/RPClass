@@ -30,7 +30,8 @@
 
 		<div th:if="(${session.u.id} eq ${user.id}) or ${user.hasRole('ADMIN')}" class="container">
 
-			<div style="flex:0 1 auto;" class="scroll"> 
+<!--/*
+			<div style="flex:0.25 1 0;" class="scroll"> 
 
 				<h3 style="text-align:center;margin-bottom:15px">Cambiar información de usuario</h3>
 
@@ -48,8 +49,15 @@
 
 				</form>
 			</div>
+*/-->	
 
-			<div style="flex:0 1 auto;" class="scroll"> 
+			<div style="flex:0.25 1 0;" class="scroll"> 
+
+				<h3 style="text-align:center;margin-bottom:15px">Notificaciones</h3>
+				
+			</div>
+
+			<div style="flex:0.5 1 0;" class="scroll"> 
 
 				<h3 style="text-align:center;margin-bottom:15px">Logros</h3>
 
@@ -58,6 +66,12 @@
 					<span style="display: block;" th:text="'Nivel: ' + ${a.level}">Nivel</span>
 					<span style="display: block;" th:text="'Progreso: ' + ${a.progress} + '/' + ${a.currentLevel()}">Progreso</span>
 				</div>
+
+			</div>
+
+			<div style="flex:0.25 1 0;" class="scroll"> 
+
+				<h3 style="text-align:center;margin-bottom:15px">Mi progreso</h3>
 
 			</div>
 
