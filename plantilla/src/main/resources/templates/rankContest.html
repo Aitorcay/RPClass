@@ -46,11 +46,11 @@
   				</form>					
 			</div>
 
-			<div th:if="${results} AND ${positionUser}" style="flex:0.45 1 0;text-align: center" class="scroll"> 
+			<div style="flex:0.45 1 0;text-align: center" class="scroll"> 
 
 				<h2 style="margin-bottom:10px;">Ranking de estudiantes</h2>
 
-				<div style="display: inline-block">
+				<div th:if="${results} AND ${positionUser}" style="display: inline-block">
 					<table>
 						<tr th:each="r, iStatR : ${results}">
 							<td><img height="50" width="50" th:src="@{/user/{id}/team/{teamId}/photo(id=${session.u.id},teamId=${r.user.team.id})}"></td>
@@ -65,13 +65,15 @@
 					</table>
 				</div>
 
+  				<h4 th:if="!${results} OR !${positionUser} OR ${results.size()} <= 0 AND ${positionUser.size()} <= 0" th:text="'No existen resultados para la creación del ranking.'"></h4>	
+
 			</div>
 
-			<div th:if="${rankingTeam} AND ${positionTeam}" style="flex:0.35 1 0;text-align: center" class="scroll"> 
+			<div  style="flex:0.35 1 0;text-align: center" class="scroll"> 
 
 				<h2 style="margin-bottom:10px;">Ranking de equipos</h2>
 
-				<div style="display: inline-block">
+				<div th:if="${rankingTeam} AND ${positionTeam}" style="display: inline-block">
 					<table>
 						<tr th:each="rt, iStatR : ${rankingTeam}">
 							<td><img height="50" width="50"  th:src="@{/user/{id}/team/{teamId}/photo(id=${session.u.id},teamId=${rt.id})}"></td>
@@ -81,7 +83,9 @@
 							<td th:text="${scoreTeam[iStatR.index]}"></td>
 						</tr>
 					</table>
-				</div>
+				</div>			
+
+  				<h4 th:if="!${rankingTeam} OR !${positionTeam} OR ${rankingTeam.size()} <= 0 AND ${positionTeam.size()} <= 0" th:text="'No existen resultados para la creación del ranking.'"></h4>	
 
 			</div>
 				

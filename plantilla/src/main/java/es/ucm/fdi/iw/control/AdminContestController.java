@@ -335,7 +335,7 @@ public class AdminContestController {
 				}
 			}
 			
-	        if (contest.getChecked() == 0) {
+	        if (contest.getChecked() == 0 && !results.isEmpty()) {
 				contest.setChecked((byte) 1);
 				updateAchievementsTeam((List<StTeam>)(Object)Arrays.asList(sortedTeams.keySet().toArray()), positionTeam);
 			}

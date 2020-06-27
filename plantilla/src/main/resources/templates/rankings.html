@@ -46,14 +46,14 @@
   				</form>					
 			</div>
 
-			<div th:if="${rankingUser} AND ${positionUser}" style="flex:0.45 1 0;text-align: center" class="scroll"> 
+			<div style="flex:0.45 1 0;text-align: center" class="scroll"> 
 
 				<h2 style="margin-bottom:10px;">Ranking de estudiantes</h2>
 
-				<div style="display: inline-block">
+				<div th:if="${rankingUser} AND ${positionUser}" style="display: inline-block">
 					<table>
 						<tr th:each="ru, iStatR : ${rankingUser}">
-							<td><img height="50" width="50" th:src="@{/user/{id}/team/{teamId}/photo(id=${session.u.id},teamId=${ru.team.id})}"></td>
+							<td th:if="${ru.team}"><img height="50" width="50" th:src="@{/user/{id}/team/{teamId}/photo(id=${session.u.id},teamId=${ru.team.id})}"></td>
 							<td><img height="50" width="50" th:src="@{/user/{id}/photo(id=${ru.id})}"></td>
 							<td th:text="${positionUser[iStatR.index]}"></td>
 							<td th:text="${ru.username}"></td>
@@ -65,13 +65,15 @@
 					</table>
 				</div>
 
+  				<h4 th:if="!${rankingUser} OR !${positionUser} OR ${rankingUser.size()} <= 0 AND ${positionUser.size()} <= 0" th:text="'No existen alumnos la creación del ranking.'"></h4>	
+
 			</div>
 
-			<div th:if="${rankingTeam} AND ${positionTeam}" style="flex:0.35 1 0;text-align: center" class="scroll"> 
+			<div style="flex:0.35 1 0;text-align: center" class="scroll"> 
 
 				<h2 style="margin-bottom:10px;">Ranking de equipos</h2>
 
-				<div style="display: inline-block">
+				<div th:if="${rankingTeam} AND ${positionTeam}" style="display: inline-block">
 					<table>
 						<tr th:each="rt, iStatR : ${rankingTeam}">
 							<td><img height="50" width="50" th:src="@{/user/{id}/team/{teamId}/photo(id=${session.u.id},teamId=${rt.id})}"></td>
@@ -82,6 +84,8 @@
 						</tr>
 					</table>
 				</div>
+
+  				<h4 th:if="!${rankingTeam} OR !${positionTeam} OR ${rankingTeam.size()} <= 0 AND ${positionTeam.size()} <= 0" th:text="'No existen equipos para la creación del ranking.'"></h4>	
 
 			</div>
 

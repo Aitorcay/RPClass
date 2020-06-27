@@ -40,10 +40,11 @@
 						th:action="@{/user/{id}/play/{classId}/{contestId}(id=${session.u.id},classId=${stClass.id},contestId=${c.id})}">
 					<button style="margin:5px;" type="submit" th:text="${c.stClass.name} + ' - ' + ${c.name}">Mis clases</button>
   				</form>	
-  				<h3 style="text-align: left;" th:unless="${contestList.size()} > 0" th:text="'No existen pruebas disponibles de momento.'"></h3>	
+
+  				<h4 style="text-align: left;" th:unless="${contestList.size()} > 0" th:text="'No existen pruebas disponibles de momento.'"></h3>	
 			</div>
 
-			<div th:if="${contest}" style="flex:0.35 1 0;" class="scroll">
+			<div th:if="${contest}" style="flex:0.45 1 0;" class="scroll">
 				<form th:if="${session.u.hasRole('ADMIN')}"  method="POST" 
 					th:action="@{/admin/{id}/play/{contestId}/results(id=${session.u.id},contestId=${contest.id})}">
 					<div>
@@ -97,7 +98,7 @@
 				</form>
 			</div>	
 
-			<div th:if="${result} AND ${contest}" style="flex:0.5 1 0;" class="scroll">
+			<div th:if="${result} AND ${contest}" style="flex:0.4 1 0;" class="scroll">
 
 				<h3 th:if="${result.submitDate}" th:text="'Fecha de entrega: ' + ${#dates.format(result.submitDate, 'dd-MM-yyyy HH:mm')}"></h3>
 

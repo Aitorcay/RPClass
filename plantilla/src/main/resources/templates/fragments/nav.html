@@ -50,7 +50,10 @@
 			</form>	
 		</div>
 
-		<div class="logx" th:if="${session.u}">			
+		<div class="logx" th:if="${session.u}">	
+			
+			<a><h4 style="padding-left:25px;margin-right:25px;display:inline;" th:text="${session.u.username}"></h4></a>
+
 			<form th:action="@{/logout}">
 				<button type="submit">Cerrar sesión</button>
 			</form>					

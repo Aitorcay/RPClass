@@ -121,8 +121,8 @@ div.assetBox {
 	overflow:scroll;
 }
 div.scroll { 
-    padding:20px;
-    margin: 20px;
+    padding:10px;
+    margin: 10px;
     min-height: 0px;
     overflow-x: hidden; 
     overflow-y: hidden; 

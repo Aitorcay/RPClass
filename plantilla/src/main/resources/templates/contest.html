@@ -64,6 +64,8 @@
 						th:action="@{/admin/{id}/contest/{contestId}(id=${session.u.id},contestId=${c.id})}">
 					<button type="submit" th:text="${c.stClass.name} + ' - ' + ${c.name}">Concurso</button>
   				</form>					
+
+  				<h4 style="text-align: left;" th:unless="${contestList.size()} > 0" th:text="'No existen pruebas creadas de momento.'"></h4>	
 			</div>
 
 			<div th:if=${contest} style="flex:0.35 1 0;text-align:center;" class="scroll">

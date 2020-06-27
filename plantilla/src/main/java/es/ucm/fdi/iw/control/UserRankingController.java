@@ -156,48 +156,55 @@ public class UserRankingController {
 		StTeam team;
 		int pos = 1;
 		double score;
-		double max = results.get(0).getScore();
-		positionUser.add(pos);
-		//En caso de que varios estudiantes hayan logrado la misma puntuación compartirán la posición de la clasificación
-		for (int i=0; i < results.size(); i++) {
-			score = results.get(i).getScore();
-			
-			if ( score < max) {
-				pos++; max = score;
-				positionUser.add(pos);
-			} else {
-				positionUser.add(pos);
+		double max;
+		if (results != null && !results.isEmpty()) {
+			max = results.get(0).getScore();
+			//En caso de que varios estudiantes hayan logrado la misma puntuación compartirán la posición de la clasificación
+			for (int i=0; i < results.size(); i++) {
+				score = results.get(i).getScore();
+				
+				if ( score < max) {
+					pos++; max = score;
+					positionUser.add(pos);
+				} else {
+					positionUser.add(pos);
+				}
+				
+				team = results.get(i).getUser().getTeam();
+				if (sumScores.keySet().contains(team))
+					sumScores.put(team, sumScores.get(team) + score);
+				else 
+					sumScores.put(team, score);
 			}
-			
-			team = results.get(i).getUser().getTeam();
-			sumScores.put(team, sumScores.get(team) + score);
+	
+			model.addAttribute("positionUser", positionUser);
+	
 		}
-
-		model.addAttribute("positionUser", positionUser);		
 		
-		LinkedHashMap<StTeam, Double> sortedTeams = new LinkedHashMap<>();
-		sumScores.entrySet()
-	    .stream()
-	    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())) 
-	    .forEachOrdered(x -> sortedTeams.put(x.getKey(), x.getValue()));
-
-		//En caso de que varios equipos hayan logrado la misma puntuación compartirán la posición de la clasificación
-		List<Integer> positionTeam = new ArrayList<>();
-		pos = 1;
-		max = (double) sortedTeams.values().toArray()[0];
-		positionTeam.add(pos);
-		for (int k=0; k < sortedTeams.values().size(); k++) {
-			score = (double) sortedTeams.values().toArray()[k];
-			if ( score < max) {
-				pos++; max = score;
-				positionTeam.add(pos);
-			} else {
-				positionTeam.add(pos);
+		if (sumScores != null && !sumScores.isEmpty()) {
+			LinkedHashMap<StTeam, Double> sortedTeams = new LinkedHashMap<>();
+			sumScores.entrySet()
+		    .stream()
+		    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())) 
+		    .forEachOrdered(x -> sortedTeams.put(x.getKey(), x.getValue()));
+			
+			//En caso de que varios equipos hayan logrado la misma puntuación compartirán la posición de la clasificación
+			List<Integer> positionTeam = new ArrayList<>();
+			pos = 1;
+			max = (double) sortedTeams.values().toArray()[0];
+			for (int k=0; k < sortedTeams.values().size(); k++) {
+				score = (double) sortedTeams.values().toArray()[k];
+				if ( score < max) {
+					pos++; max = score;
+					positionTeam.add(pos);
+				} else {
+					positionTeam.add(pos);
+				}
 			}
-		}
-        
-		model.addAttribute("rankingTeam", Arrays.asList(sortedTeams.keySet().toArray()));
-		model.addAttribute("scoreTeam", Arrays.asList(sortedTeams.values().toArray()));
-		model.addAttribute("positionTeam", positionTeam);	
+	        
+			model.addAttribute("rankingTeam", Arrays.asList(sortedTeams.keySet().toArray()));
+			model.addAttribute("scoreTeam", Arrays.asList(sortedTeams.values().toArray()));
+			model.addAttribute("positionTeam", positionTeam);		
+		}			
 	}
 }
