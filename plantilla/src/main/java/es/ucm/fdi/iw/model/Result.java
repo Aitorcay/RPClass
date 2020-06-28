@@ -35,7 +35,8 @@ import javax.persistence.TemporalType;
 	@NamedQuery(name="Result.byContest",
 	query="SELECT r FROM Result r JOIN r.contest c JOIN r.user u "
 			+ "WHERE c.id = :contestId "
-			+ "AND u.roles = 'USER'"),
+			+ "AND u.roles = 'USER' "
+			+ "ORDER BY u.lastName ASC"),
 	@NamedQuery(name="Result.numAnswers",
 	query="SELECT COUNT(r) FROM Result r JOIN r.contest c JOIN r.answers a JOIN r.user u "
 			+ "WHERE a.id = :answerId "

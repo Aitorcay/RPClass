@@ -124,7 +124,7 @@
 								<td> Resultado </td>
 							</tr>
 							<tr th:each="r: ${resultList}">
-								<td th:text="${r.user.firstName + ' ' + r.user.lastName}"></td>
+								<td style="text-align: left" th:text="${r.user.lastName + ', ' + r.user.firstName}"></td>
 								<td th:each="a: ${r.answers}" th:text="${a.score}"></td>
 								<td th:text="${r.score}"></td>
 								<td th:if="${r.passed} AND !${r.perfect}" th:text="'SUPERADO'"></td>

@@ -51,9 +51,53 @@
 			</div>
 */-->	
 
-			<div style="flex:0.25 1 0;" class="scroll"> 
+			<div style="flex:0.5 1 0;" class="scroll"> 
 
 				<h3 style="text-align:center;margin-bottom:15px">Notificaciones</h3>
+
+				<div class="container" style="background-color: rgba(255, 255, 255, 0.75);padding:10px">
+					
+					<a class="not2"></a>
+
+					<div style="margin-left: 20px">
+						<span style="display: block;font-weight:bold" th:text="'28-06-2020 16:00'">Fecha</span>
+						<span style="display: block;font-weight:bold" th:text="'Mensajes sin leer'">Asunto</span>
+						<span style="display: block;" th:text="'Se han publicado 6 mensaje nuevos en el foro ``Dudas y preguntas´´'">Descripción</span>
+					</div>
+				</div>
+
+				<div class="container" style="background-color: rgba(255, 255, 255, 0.75);padding:10px">
+					
+					<a class="not1"></a>
+
+					<div style="margin-left: 20px">
+						<span style="display: block;font-weight:bold" th:text="'25-06-2020 12:00'">Fecha</span>
+						<span style="display: block;font-weight:bold" th:text="'Nueva prueba'">Asunto</span>
+						<span style="display: block;" th:text="'Nueva prueba ``Test código binario´´ añadida a tus pruebas'">Descripción</span>
+					</div>
+				</div>
+
+				<div class="container" style="background-color: rgba(255, 255, 255, 0.75);padding:10px">
+					
+					<a class="not3"></a>
+
+					<div style="margin-left: 20px">
+						<span style="display: block;font-weight:bold" th:text="'24-06-2020 13:00'">Fecha</span>
+						<span style="display: block;font-weight:bold" th:text="'Prueba finalizada'">Asunto</span>
+						<span style="display: block;" th:text="'Ya están disponibles los resultados de la prueba ``Test puertas lógicas´´'">Descripción</span>
+					</div>
+				</div>
+
+				<div class="container" style="background-color: rgba(255, 255, 255, 0.75);padding:10px">
+					
+					<a class="not4"></a>
+
+					<div style="margin-left: 20px">
+						<span style="display: block;font-weight:bold" th:text="'22-06-2020 10:00'">Fecha</span>
+						<span style="display: block;font-weight:bold" th:text="'Prueba completada'">Asunto</span>
+						<span style="display: block;" th:text="'Se han registrado tus respuestas para la prueba ``Test puertas lógicas´´'">Descripción</span>
+					</div>
+				</div>
 				
 			</div>
 
@@ -71,12 +115,6 @@
 						<span style="display: block;" th:text="'Progreso: ' + ${a.progress} + '/' + ${a.currentLevel()}">Progreso</span>
 					</div>
 				</div>
-
-			</div>
-
-			<div style="flex:0.25 1 0;" class="scroll"> 
-
-				<h3 style="text-align:center;margin-bottom:15px">Mi progreso</h3>
 
 			</div>
 

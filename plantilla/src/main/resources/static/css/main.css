@@ -54,6 +54,38 @@ nav>*{
 	width: 57px;
 	height: 57px;
 }
+.not1 {
+	background-image: url(../img/Not1.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	width: 64px;
+	height: 64px;
+}
+.not2 {
+	background-image: url(../img/Not2.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	width: 64px;
+	height: 64px;
+}
+.not3 {
+	background-image: url(../img/Not3.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	width: 64px;
+	height: 64px;
+}
+.not4 {
+	background-image: url(../img/Not4.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	width: 64px;
+	height: 64px;
+}
 .teamwork {
 	width: 65%;
 	background-image: url(../img/teamwork.jpg);
