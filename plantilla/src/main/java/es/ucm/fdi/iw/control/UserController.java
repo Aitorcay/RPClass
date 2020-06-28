@@ -186,4 +186,31 @@ public class UserController {
 		}
 		return getUser(id, model, session);
 	}	
+	
+	/**
+	 * Obtiene la foto de un logro
+	 * 
+	 * @param achKey	clave del logro
+	 * @param model		modelo que contendrá la información
+	 * @return			foto de perfil
+	 * @throws IOException
+	 */
+	@GetMapping(value="/{achKey}/achievement")
+	public StreamingResponseBody getAchievementPhoto(@PathVariable("achKey") String achKey,
+			Model model) throws IOException {		
+		File f = localData.getFile("achievementUser", ""+achKey);
+		InputStream in;
+		if (f.exists()) {
+			in = new BufferedInputStream(new FileInputStream(f));
+		} else {
+			in = new BufferedInputStream(getClass().getClassLoader()
+					.getResourceAsStream("static/img/unknown-user.jpg"));
+		}
+		return new StreamingResponseBody() {
+			@Override
+			public void writeTo(OutputStream os) throws IOException {
+				FileCopyUtils.copy(in, os);
+			}
+		};
+	}
 }

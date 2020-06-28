@@ -82,7 +82,7 @@ public class UserTeamController {
 	/**
 	 * Obtiene la foto de perfil de un equipo
 	 * 
-	 * @param teamId	id	id del usuario loggeado
+	 * @param teamId	id del usuario loggeado
 	 * @param model		modelo que contendrá la información
 	 * @return			foto de perfil
 	 * @throws IOException
@@ -154,5 +154,32 @@ public class UserTeamController {
 			log.info("Successfully uploaded photo for {} into {}!", id, f.getAbsolutePath());
 		}
 		return team(id, model, session);
+	}	
+	
+	/**
+	 * Obtiene la foto de un logro
+	 * 
+	 * @param achKey	clave del logro
+	 * @param model		modelo que contendrá la información
+	 * @return			foto de perfil
+	 * @throws IOException
+	 */
+	@GetMapping(value="/{achKey}/achievement")
+	public StreamingResponseBody getAchievementPhoto(@PathVariable("achKey") String achKey,
+			Model model) throws IOException {		
+		File f = localData.getFile("achievementTeam", ""+achKey);
+		InputStream in;
+		if (f.exists()) {
+			in = new BufferedInputStream(new FileInputStream(f));
+		} else {
+			in = new BufferedInputStream(getClass().getClassLoader()
+					.getResourceAsStream("static/img/unknown-user.jpg"));
+		}
+		return new StreamingResponseBody() {
+			@Override
+			public void writeTo(OutputStream os) throws IOException {
+				FileCopyUtils.copy(in, os);
+			}
+		};
 	}
 }
