@@ -7,19 +7,14 @@
  */
  
 html, body{ 
-	min-height:100%; 
+	height:100%; 
 	margin:0; 
+	background-image: url(../img/background.jpg);
 }
 body {
+	min-height:100%; 
 	display: flex;
 	flex-direction: column;
-}
-
-
-/* for debugging purposes - remove borders for a cleaner look */
-div, nav, footer {
-	border-top: 1px solid gray;
-	border-bottom: 1px solid gray;
 }
 
 /* setup nav & children */
@@ -33,13 +28,77 @@ nav>*{
 	margin: 5px;
 }
 .sitename {
-	font-size: 240%;
+	font-size: 200%;
 	font-weight: bold;
 }
 .logo {
-	background-image: url(../img/logo.png);
+	background-image: url(../img/podio.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	width: 48px;
+	height: 48px;
+}
+.gold {
+	background-image: url(../img/gold.png);
+	width: 57px;
+	height: 57px;
+}
+.silver {
+	background-image: url(../img/silver.png);
+	width: 57px;
+	height: 57px;
+}
+.bronze {
+	background-image: url(../img/bronze.png);
+	width: 57px;
+	height: 57px;
+}
+.not1 {
+	background-image: url(../img/Not1.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
 	width: 64px;
 	height: 64px;
+}
+.not2 {
+	background-image: url(../img/Not2.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	width: 64px;
+	height: 64px;
+}
+.not3 {
+	background-image: url(../img/Not3.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	width: 64px;
+	height: 64px;
+}
+.not4 {
+	background-image: url(../img/Not4.png);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	width: 64px;
+	height: 64px;
+}
+.teamwork {
+	width: 65%;
+	background-image: url(../img/teamwork.jpg);
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	margin: 50px
+}
+.home_box {
+	flex: 35%;
+	margin: 50px;
+	padding: 20px;
+	background-color: rgba(255, 255, 255, 0.75);
 }
 .logx {
 	margin-left: auto;
@@ -47,17 +106,75 @@ nav>*{
 .logx form, .logx img {
 	display: inline;
 }
+.droptarget {
+	width: 175px; 
+	height: 15px;
+	padding: 5px;
+	border: 1px solid #aaaaaa;
+	background-color: rgba(255, 255, 255, 1);
+	text-align: center;
+	vertical-align: middle;
+	cursor: move;
+}
+.contestBox {
+	padding: 10px;
+	border: 1px solid #aaaaaa;
+}
 
 /* setup main container */
 div.container {
+    min-height: 0px;
 	display: flex;
-	flex-wrap: wrap-reverse;
+	flex:1;"
+	flex-wrap: wrap;
 }
 div.main {
+	height:100%; 
+    min-height: 0px;
+	width:100%; 
 	flex: auto;
+	display: flex;
+	flex-direction: column;
 }
 div.sidebar {
 	flex: none;
+}
+div.content {
+	border: 1px solid #aaaaaa;
+	padding:10px;
+	display: block;
+}
+div.assetBox {
+	float: left; 
+	display: block;
+	padding: 20px;
+	border: 1px solid #aaaaaa;
+	vertical-align: middle;
+	overflow:scroll;
+}
+div.scroll { 
+    padding:10px;
+    margin: 10px;
+    min-height: 0px;
+    overflow-x: hidden; 
+    overflow-y: hidden; 
+	overflow: auto;
+    text-align:justify; 
+    flex: 1;
+	border: 1px solid #aaaaaa;
+	background-color: rgba(255, 255, 255, 0.75);
+}
+div.team { 
+	width: 225px; 
+	height: 150px;
+	margin: 5px;
+	padding: 5px;
+	border: 1px solid #aaaaaa;
+	background-color: rgba(255, 255, 255, 0.75);
+    overflow-x: hidden; 
+    overflow-x: auto; 
+    text-align:justify; 
+	overflow: auto;
 }
 
 /* setup footer */

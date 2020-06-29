@@ -1,0 +1,85 @@
+{
+	"nombreClase": "Clase de ejemplo",
+	"alumnos": [
+		{
+			"nombre": "Gloria",
+			"apellidos": "Cebrian Pereiro"
+		},
+		{
+			"nombre": "Agustín",
+			"apellidos": "Grande Borrego"
+		},
+		{
+			"nombre": "María",
+			"apellidos": "Burgos Acuña"
+		},
+		{
+			"nombre": "Miguel",
+			"apellidos": "Olivera Mañas"
+		},
+		{
+			"nombre": "Rosa",
+			"apellidos": "Monge Ocaña"
+		},
+		{
+			"nombre": "Álvaro",
+			"apellidos": "Farre Galera"
+		},
+		{
+			"nombre": "Ángela",
+			"apellidos": "Morell Espi"
+		},
+		{
+			"nombre": "Carmen",
+			"apellidos": "Canal Soriano"
+		},
+		{
+			"nombre": "Elena",
+			"apellidos": "Gracia Valdés"
+		},
+		{
+			"nombre": "Ramón",
+			"apellidos": "Méndez Álamo"
+		},
+		{
+			"nombre": "Daniel",
+			"apellidos": "Martínez Betancor"
+		},
+		{
+			"nombre": "Francisco",
+			"apellidos": "Vasco Nogueira"
+		},
+		{
+			"nombre": "Jaime",
+			"apellidos": "Manzanares Palomar"
+		},
+		{
+			"nombre": "Rocía",
+			"apellidos": "Gutiérrez Montiel"
+		},
+		{
+			"nombre": "Adrián",
+			"apellidos": "Soto Huertas"
+		},
+		{
+			"nombre": "Enrique",
+			"apellidos": "Calvo Arribas"
+		},
+		{
+			"nombre": "Joaquín",
+			"apellidos": "Parada Puertas"
+		},
+		{
+			"nombre": "Sonia",
+			"apellidos": "Mantilla Toledano"
+		},
+		{
+			"nombre": "Susana",
+			"apellidos": "Asensio Sierra"
+		},
+		{
+			"nombre": "Santiago",
+			"apellidos": "Gómez Palmer"
+		}
+	]
+}

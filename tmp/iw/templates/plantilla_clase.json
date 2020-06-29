@@ -1,0 +1,9 @@
+{
+	"nombreClase": "escribe aqui el nombre de la clase",
+	"alumnos": [
+		{
+			"nombre": "escribe aqui el nombre del estudiante",
+			"apellidos": "escribe aqui los apellidos del estudiante"
+		}
+	]
+}

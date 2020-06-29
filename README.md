@@ -1,18 +1,23 @@
-# iw1920
-Material para la asignatura de Ingeniería Web, edición 2019-20, de la Facultad de Informática UCM
+# RPClass
+Trabajo de Fin de Máster, curso 2019-20, Facultad de Informática UCM
 
 ## Contenido
 
-* en [/doc/](https://github.com/manuel-freire/iw1920/tree/master/doc) tienes las transparencias, en Markdown. Puedes leerlas tal cual están (es texto), o convertirlas a PDF u otro formato usando, por ejemplo, [Pandoc](https://pandoc.org). Tengo un [script](https://github.com/manuel-freire/fdi-utils) en python llamado `markdown-to-beamer` que es el que uso para generar las transparencias que subo a Campus Virtual y uso en clase.
+RPClass es una aplicación para gamificación de ejercicios en el aula. Permite la creación de perfiles para profesores y estudiantes. Los profesores podrán crear sus propias clases y pruebas para organizar competiciones entre sus alumnos. La participación en las pruebas se realiza de forma individual pero los alumnos estarán agrupados en equipos cuyos miembros colaborarán para obtener los mejores resultados.
 
-* en [/demo](https://github.com/manuel-freire/iw1920/tree/master/demo) está el proyecto de demostración explicado en el [tutorial](https://github.com/manuel-freire/iw1920/blob/master/doc/05-tutorial.md)
+Los profesores podrán añadir recursos (clases y pruebas), mediante la carga de ficheros. En el caso de las clases bastará con proporcionar un nombre de clase y los nombre y apellidos de los estudiantes. Para las pruebas se deberá especificar un nombre de pruebas y para cada pregunta un enunciado y las opciones para responder acompañadas de una puntuación. Los docentes podrán controlar el acceso de los alumnos a las pruebas y determinar su momento de finalización. Los resultados obtenidos se recopilarán automáticamente en una tabla y se utilizarán para la generación de gráficas estadísticas 
 
-* en [/plantilla](https://github.com/manuel-freire/iw1920/tree/master/plantilla) está la plantilla recomendada para los proyectos de este año. Sobre un proyecto "desde cero", por ejemplo el visto en el tutorial, añade:
+Los estudiantes participarán en las pruebas y en función de su desempeño incrementarán su puntuación, desbloqueando logros y aportando su contribución individual al progreso del equipo al que pertenezcan. Cada prueba contará con su propia clasificación de alumnos y grupos y otorgará recompensas en función de la posición alcanzada. El progreso conseguido a lo largo de la utilización de la plataforma se recogerá en un ranking global, el objetivo principal de la competición.
 
-    - Perfiles para mantener una BD HyperSQL en memoria o en disco
-    - Seguridad con múltiples roles definidos, y persistiendo usuarios vía BD
-    - Controladores con métodos para
-        * crear usuarios programáticamente
-        * subir y bajar ficheros de forma segura
-    - Una clase auxiliar para configurar a dónde se suben los ficheros que se suben
-    - WebSockets funcionando
+Para probar el sistema se incluye en el proyecto el siguiente contenido por defecto (fichero [import.sql](https://github.com/Aitorcay/RPClass/blob/master/plantilla/src/main/resources/import.sql)):
+
+    - Un perfil de profesor
+    - Una clase con 6 alumnos repartidos en 3 equipos
+    - Una prueba
+    - Los resultados obtenidos con la participación de los alumnos
+    - Logros desbloqueables
+        * Número de respuestas correctas (individual / equipo)
+        * Número de pruebas superadas (individual)
+        * Número de pruebas con puntuación perfecta (individual)
+        * Puntuación acumulada (individual / equipo)
+        * Número de pruebas finalizadas en el top3 (individual / equipo)

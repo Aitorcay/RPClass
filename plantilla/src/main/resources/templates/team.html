@@ -3,7 +3,13 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head><th:block th:replace="fragments/head :: header"/>
-	<title>RPC - Profesor</title>
+	<title>RPC - Estudiante</title>
+	<style>
+		table, tr, td {
+			border-collapse: collapse;
+			padding: 7px;
+		}
+	</style>
 </head>
 <body>
 	<nav th:replace="fragments/nav.html :: nav">
@@ -11,17 +17,78 @@
 	</nav>
 	
 	<div class="container">
-	<div class="main">
+	<div class="main">		
 		
-	<p>
-	Vista de equipo
-	</p>
-		
-	<footer th:replace="fragments/footer.html :: footer">
-		Footer goes here
-	</footer>
+		<nav  style="background-color: rgba(255, 255, 255, 0.75);">
+
+			<h1 style="margin-left:25px;margin-right:25px;" th:text="${team.teamName}"></h1>
+
+			<img height="50" width="50"  th:src="@{/user/{id}/team/{teamId}/photo(id=${session.u.id},teamId=${team.id})}">
+
+			<form th:action="@{/user/{id}/team/{teamId}/photo(id=${user.id},teamId=${team.id})}" method="POST" enctype="multipart/form-data">
+				Nueva foto <input type="file" name="photo"/>
+				<button type="submit">Actualizar</button>
+			</form>
 	
+		</nav>
+
+		<div th:if="(${session.u.id} eq ${user.id}) or ${user.hasRole('ADMIN')}" class="container">
+
+			<div style="flex:0.25 1 0;" class="scroll"> 
+
+				<h3 style="text-align:center;margin-bottom:15px">Miembros del equipo</h3>
+				<table th:if="${members}" class="adminTable">
+					<tr th:each="m, iStatM : ${members}">
+						<td><img height="36" width="36" th:src="@{/user/{id}/photo(id=${m.id})}"></td>
+						<td th:text="${iStatM.index + 1} + '. ' + ${m.username} + ' - '  +${m.elo}" + ></td>
+					</tr>
+				</table>
+
+			</div>
+
+			<div style="flex:0.5 1 0;" class="scroll"> 
+
+				<h3 h3 style="text-align:center;margin-bottom:15px">Logros</h3>
+
+				<div class="container" th:if="${achievements}" style="background-color: rgba(255, 255, 255, 0.75);padding:10px" th:each="a: ${achievements}">
+					
+					<img height="64" width="64" th:src="@{/user/{id}/{achKey}/achievement(id=${user.id},achKey=${a.goal.key})}">
+
+					<div style="margin-left: 20px">
+						<span style="display: block;" th:text="'Objetivo: ' + ${a.currentObjective()}">Objetivo</span>
+						<span style="display: block;" th:text="'Nivel: ' + ${a.level}">Nivel</span>
+						<span style="display: block;" th:text="'Progreso: ' + ${a.progress} + '/' + ${a.currentLevel()}">Progreso</span>
+					</div>
+				</div>
+
+			</div>
+
+			<div style="flex:0.25 1 0;" class="scroll"> 
+
+				<h3 h3 style="text-align:center;margin-bottom:15px">Trofeos</h3>
+
+				<div th:if="${team}" style="padding:10px"  class="container">
+					<a class="gold"></a>
+					<h3 style="margin-left:10px;margin-right:10px" th:text="${team.gold}">T.oro</h3>
+					<a class="silver"></a>
+					<h3 style="margin-left:10px;margin-right:10px" th:text="${team.silver}">T.plata</h3>
+					<a class="bronze"></a>
+					<h3 style="margin-left:10px;margin-right:10px" th:text="${team.bronze}">T.bronce</h3>
+				</div>
+
+			</div>
+
+		</div>
+	
+		<footer th:replace="fragments/footer.html :: footer">
+			Footer goes here
+		</footer>
+
 	</div>
 	</div>
+	
+<script>
+</script>	
+
 </body>
 </html>

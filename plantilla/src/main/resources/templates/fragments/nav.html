@@ -6,91 +6,89 @@
 	<title>Nav fragment - rest intentionally left empty</title>
 </head>
 <body>
-	<nav th:fragment="nav">
-		<a class="logo" href="" th:href="@{/}"></a>
-		<span class="sitename">RPC - Role Playing Class</span>
+	<nav th:fragment="nav" style="background-color: rgba(255, 255, 255, 0.75);border: 2px solid #aaaaaa;">
+		<a class="logo"></a>
+		<span class="sitename">RPClass</span>
 
-		<div th:if="${session.u}">			
-			<div th:if="${session.u.hasRole('ADMIN')}">	
-				<form th:action="@{/admin/{id}/class(id=${session.u.id})}">
-					<button type="submit">Mis clases</button>
-  				</form>	
-  			</div>			
+		<div class="logx" th:if="${session.u} AND ${session.u.hasRole('ADMIN')}">
+			<form th:action="@{/admin/{id}/class(id=${session.u.id})}">
+				<button type="submit">Mis clases</button>
+			</form>	
+
+			<form th:action="@{/admin/{id}/contest(id=${session.u.id})}">
+				<button type="submit">Mis pruebas</button>
+			</form>  
+
+			<form th:action="@{/admin/{id}/rankings(id=${session.u.id})}">
+				<button type="submit">Rankings</button>
+			</form>		
+
+			<form th:action="@{/admin/{id}/play(id=${session.u.id})}">
+				<button type="submit">Jugar</button>
+			</form>	
+
+			<form th:action="@{/admin/{id}(id=${session.u.id})}">
+				<button type="submit">Guías de uso</button>
+			</form>		  				
 		</div>
 
-		<div th:if="${session.u}">			
-			<div th:if="${session.u.hasRole('ADMIN')}">	
-				<form th:action="@{/admin/{id}/contest(id=${session.u.id})}">
-					<button type="submit">Mis pruebas</button>
-  				</form>  
-  			</div>				
+		<div class="logx" th:if="${session.u} AND ${session.u.hasRole('USER')}">
+			<form th:action="@{/user/{id}(id=${session.u.id})}">
+				<button type="submit">Mi perfil</button>
+			</form>	
+
+			<form th:action="@{/user/{id}/team(id=${session.u.id})}">
+				<button type="submit">Mi equipo</button>
+			</form>  
+
+			<form th:action="@{/user/{id}/rankings/{classId}(id=${session.u.id},classId=${session.u.stClass.id})}">
+				<button type="submit">Rankings</button>
+			</form>		
+
+			<form th:action="@{/user/{id}/play/{classId}(id=${session.u.id},classId=${session.u.stClass.id})}">
+				<button type="submit">Jugar</button>
+			</form>	
 		</div>
 
-		<div th:if="${session.u}">			
-			<div th:if="${session.u.hasRole('ADMIN')}">	
-				<form th:action="@{/admin/{id}/play(id=${session.u.id})}">
-					<button type="submit">Jugar</button>
-  				</form>		
-			</div>					
+		<div class="logx" th:if="${session.u}">	
+			
+			<a><h4 style="padding-left:25px;margin-right:25px;display:inline;" th:text="${session.u.username}"></h4></a>
+
+			<form th:action="@{/logout}">
+				<button type="submit">Cerrar sesión</button>
+			</form>					
 		</div>
 
-		<div th:if="${session.u}">			
-			<div th:if="${session.u.hasRole('USER')}">	
-				<form th:action="@{/user/{id}/profile(id=${session.u.id})}">
-					<button type="submit">Mi perfil</button>
-  				</form>	
-  			</div>			
-		</div>
+		<form th:unless="${session.u}" style="margin-left: auto" th:action="@{/login}" method="post">
+			<input name="username" id="username" required placeholder="Usuario"/>
+			<input name="password" id="password" required placeholder="Contraseña" type="password"/>
+			<button type="submit">Iniciar sesión</button>
+		</form>	
 
-		<div th:if="${session.u}">			
-			<div th:if="${session.u.hasRole('USER')}">	
-				<form th:action="@{/user/{id}/team(id=${session.u.id})}">
-					<button type="submit">Mi equipo</button>
-  				</form>  
-  			</div>				
-		</div>
-
-		<div th:if="${session.u}">			
-			<div th:if="${session.u.hasRole('USER')}">	
-				<form th:action="@{/user/{id}/rankings(id=${session.u.id})}">
-					<button type="submit">Rankings</button>
-  				</form>		
-			</div>					
-		</div>
-
-		<div class="logx" th:if="${session.u}">			
-			<a th:if="${session.u.hasRole('ADMIN')}" th:href="@{/admin/{id}(id=${session.u.id})}">admin</a>
-			<a th:if="${session.g} neq null" th:href="@{/clase/}">clase</a>
-			<a th:href="@{/logout}" href="/logout">logout</a>
-			<a th:href="@{/user/{id}(id=${session.u.id})}">
-				<img class="userthumb" th:src="@{/user/{id}/photo(id=${session.u.id})}">
-				<span th:text="${session.u.username}">Pepe</span></a>						
-		</div>
+<!--/*
 		<div class="logx" th:unless="${session.u}">
+
 			<a th:href="@{/login}" href="/login">login</a>
-			<!--/*
-				Esto es un comentario "thymeleaf" - no se verá en el HTML
-				El bloque de "debug" sólo está activado si application.properties tiene debug a "true"
-				(ver StartupConfig.java para ver cómo se lee el atributo y se pone en ${application.debug})
-			*/-->
+			
 			<div class="debug" th:if="${application.debug}">
 				<form th:action="@{/login}" method="post">
-					<input type="hidden" name="username" value="a">
+					<input type="hidden" name="username" value="David Tercero">
 					<input type="hidden" name="password" value="aa">
 					<button type="submit">a</button>
-  				</form>				
-				<form th:action="@{/clase/enter}" method="post">
-					<input id="z" type="hidden" name="userName" value="z">
-					<input type="hidden" name="groupCode" value="test">
+  				</form>	
+				<form th:action="@{/login}" method="post">
+					<input type="hidden" name="username" value="ST.00A">
+					<input type="hidden" name="password" value="aa">
 					<button type="submit">z</button>
-  				</form> 
+  				</form>		
 				<script>
 				window.addEventListener('load', () => {
 					document.getElementById('z').value = "z" + Math.floor(Math.random()*1000);		        	
 				});
 				</script>  				
   			</div>
-		</div>		
+		</div>	
+*/-->	
 	</nav>
 </body>
 </html>

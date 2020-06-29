@@ -3,40 +3,59 @@ package es.ucm.fdi.iw.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
 
 
 /**
- * A class consist of a group of students coordinated by a teacher
+ * A class consists of a group of students coordinated by a teacher
  *
  * @author aitorcay
  */
 
 @Entity
-//@NamedQueries({
-//	@NamedQuery(name="StClass.byTeacher",
-//	query="SELECT stc FROM StClass stc "
-//			+ "WHERE stc.teacher = :teacherId")
-//})
-
+@NamedQueries({
+	@NamedQuery(name="StClass.byTeacher",
+	query="SELECT st FROM StClass st JOIN st.teacher t "
+			+ "WHERE t.id = :userId"),
+	@NamedQuery(name="StClass.contestOwner",
+	query="SELECT st FROM StClass st JOIN st.classContest c "
+			+ "WHERE c.id = :contestId"),
+	@NamedQuery(name="StClass.contestTeams",
+	query="SELECT tl FROM StClass st JOIN st.classContest c JOIN st.teamList tl "
+			+ "WHERE c.id = :contestId")
+})
 public class StClass {
 
-	private long id;
-	private String className;
-//	private User teacher;
-
-//	private List<User> students = new ArrayList<>();
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+	private String name;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private User teacher;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinColumn(name = "st_class_id")
+	private List<User> students = new ArrayList<>();
+
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "st_class_id")
+	private List<StTeam> teamList = new ArrayList<>();
+
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "st_class_id")
+	private List<Contest> classContest = new ArrayList<>();
+	
 	public long getId() {
 		return id;
 	}
@@ -45,39 +64,56 @@ public class StClass {
 		this.id = id;
 	}
 
-	public String getClassName() {
-		return className;
+	public String getName() {
+		return name;
 	}
 
-	public void setClassName(String className) {
-		this.className = className;
+	public void setName(String name) {
+		this.name = name;
 	}	
-//	
-//	@ManyToOne(targetEntity = User.class)
-//	@JoinColumn(name = "stClass")
-//	public User getTeacher() {
-//		return teacher;
-//	}
-//
-//	public User setTeacher() {
-//		return teacher;
-//	}
-//	
-//	@OneToMany(targetEntity = User.class)
-//	@JoinColumn(name = "st_class")
-//	public List<User> getStudents() {
-//		return students;
-//	}
-//
-//	public void setStudents(List<User> students) {
-//		this.students = students;
-//	}
+	
+	public User getTeacher() {
+		return teacher;
+	}
+
+	public void setTeacher(User teacher) {
+		this.teacher = teacher;
+	}
+	
+	public List<User> getStudents() {
+		return students;
+	}
+
+	public void setStudents(List<User> students) {
+		this.students = students;
+	}
+
+	public List<StTeam> getTeamList() {
+		return teamList;
+	}
+
+	public void setTeamList(List<StTeam> teamList) {
+		this.teamList = teamList;
+	}
+	
+	public List<Contest> getClassContest() {
+		return classContest;
+	}
+
+	public void setClassContest(List<Contest> classContest) {
+		this.classContest = classContest;
+	}
 	
 	@Override
 	public String toString() {
 		StringBuilder stb = new StringBuilder();
-		
-		stb.append("Clase: " + this.getClassName() + "\n");
+
+		stb.append("--- CLASE ---\n");
+		stb.append("Clase: " + this.getName() + "\n");
+		stb.append("Profesor/a: " + this.teacher.getUsername() + "\n");
+		for (int i = 0; i < this.students.size(); i++) {
+			stb.append(this.students.get(i).getUsername() + "\n");
+		}
 		
 	    return stb.toString();
 	}

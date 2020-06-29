@@ -3,25 +3,103 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head><th:block th:replace="fragments/head :: header"/>
-	<title>RPC - Profesor</title>
+	<title>RPC - Estudiante</title>
+	<style>
+		table, tr, td {
+			border-collapse: collapse;
+			padding: 7px;
+		}
+	</style>
 </head>
-<body>
+<body onload="fillRankings()">
 	<nav th:replace="fragments/nav.html :: nav">
 		Nav goes here
 	</nav>
 	
 	<div class="container">
-	<div class="main">
+	<div class="main">		
 		
-	<p>
-	Vista de rankings
-	</p>
-		
+		<nav style="background-color: rgba(255, 255, 255, 0.75);">
+
+			<h1 style="margin-left:25px;margin-right:25px;">Clasificación</h1>
+	
+		</nav>
+
+		<div th:if="(${session.u.id} eq ${user.id}) or ${user.hasRole('ADMIN')}" class="container">
+
+			<div th:if="${classList}" style="flex:0.2 1 0;" class="scroll">		
+				<form style="margin:5px" th:each="c: ${classList}" 
+						th:action="@{/admin/{id}/rankings/{classId}(id=${session.u.id},classId=${c.id})}">
+					<button type="submit" th:text="${c.name}">Clase</button>
+  				</form>					
+			</div>
+
+			<div th:if="${contestList} AND ${stClass}" style="flex:0.2 1 0;" class="scroll">	
+
+				<form style="margin:5px" th:action="@{/user/{id}/rankings/{classId}(id=${session.u.id},classId=${stClass.id})}">
+					<button type="submit">Global</button>
+  				</form>	
+
+				<form style="margin:5px" th:each="c: ${contestList}" 
+						th:action="@{/user/{id}/rankings/{classId}/{contestId}(id=${session.u.id},classId=${stClass.id},contestId=${c.id})}">
+					<button type="submit" th:text="${c.name}">Concurso</button>
+  				</form>					
+			</div>
+
+			<div style="flex:0.45 1 0;text-align: center" class="scroll"> 
+
+				<h2 style="margin-bottom:10px;">Ranking de estudiantes</h2>
+
+				<div th:if="${rankingUser} AND ${positionUser}" style="display: inline-block">
+					<table>
+						<tr th:each="ru, iStatR : ${rankingUser}">
+							<td th:if="${ru.team}"><img height="50" width="50" th:src="@{/user/{id}/team/{teamId}/photo(id=${session.u.id},teamId=${ru.team.id})}"></td>
+							<td><img height="50" width="50" th:src="@{/user/{id}/photo(id=${ru.id})}"></td>
+							<td th:text="${positionUser[iStatR.index]}"></td>
+							<td th:text="${ru.username}"></td>
+							<td> - </td>
+							<td th:text="${ru.firstName} + ' ' + ${ru.lastName}"></td>
+							<td> - </td>
+							<td th:text="${ru.elo}"></td>
+						</tr>
+					</table>
+				</div>
+
+  				<h4 th:if="!${rankingUser} OR !${positionUser} OR ${rankingUser.size()} <= 0 AND ${positionUser.size()} <= 0" th:text="'No existen alumnos la creación del ranking.'"></h4>	
+
+			</div>
+
+			<div style="flex:0.35 1 0;text-align: center" class="scroll"> 
+
+				<h2 style="margin-bottom:10px;">Ranking de equipos</h2>
+
+				<div th:if="${rankingTeam} AND ${positionTeam}" style="display: inline-block">
+					<table>
+						<tr th:each="rt, iStatR : ${rankingTeam}">
+							<td><img height="50" width="50" th:src="@{/user/{id}/team/{teamId}/photo(id=${session.u.id},teamId=${rt.id})}"></td>
+							<td th:text="${positionTeam[iStatR.index]}"></td>
+							<td th:text="${rt.teamName}"></td>
+							<td> - </td>
+							<td th:text="${rt.elo}"></td>
+						</tr>
+					</table>
+				</div>
+
+  				<h4 th:if="!${rankingTeam} OR !${positionTeam} OR ${rankingTeam.size()} <= 0 AND ${positionTeam.size()} <= 0" th:text="'No existen equipos para la creación del ranking.'"></h4>	
+
+			</div>
+
+		</div>
+
+	</div>
+	</div>
+	
 	<footer th:replace="fragments/footer.html :: footer">
 		Footer goes here
 	</footer>
 	
-	</div>
-	</div>
+<script>
+</script>	
+
 </body>
 </html>

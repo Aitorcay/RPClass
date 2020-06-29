@@ -1,0 +1,59 @@
+{
+	"nombreConcurso": "Concurso de prueba",
+	"preguntas": [
+		{
+			"enunciado": "¿Cuál de las siguientes afirmaciones sobre las arquitecturas paralelas existentes es falsa?",
+			"respuestas": [
+				"La arquitectura más potente del mundo ofrece un rendimiento del orden de decenas de Petaflops-->0",
+				"Para las aplicaciones de alto rendimiento acopladas se requiere una red de interconexión de baja latencia-->0",
+				"Según el Top500 la arquitectura más común es la memoria compartida-->1",
+				"El uso de una infraestructura Cloud no implica realizar cambios en las aplicaciones-->0"
+			]
+		},
+		{
+			"enunciado": "¿Cuál de las siguientes afirmaciones sobre tipos de aplicaciones es falsa?",
+			"respuestas": [
+				"Las aplicaciones de alta productividad no requieren el uso de un modelo de programación paralela-->0",
+				"El modelo de alta productividad es compatible con el de alto rendimiento ya que cada tarea puede requerir el uso simultaneo de varios procesadores-->0",
+				"Los flujos de trabajo (workflows) son un ejemplo de aplicación de alta productividad-->0",
+				"Las aplicaciones de alta productividad son sólo aquellas que se ejecutan sobre arquitecturas de ejecución oportunistas-->1"
+			]			
+		},
+		{
+			"enunciado": "En relación al modelo de memoria distribuida basado en paso de mensajes, ¿cuál de las siguientes afirmaciones es correcta?",
+			"respuestas": [
+				"Debemos realizar un código diferente para cada nodo de la máquina-->0",
+				"Existen paralelizadores automáticos-->0",
+				"Permite realizar un paralelismo a nivel de bucle y fragmento de código-->0",
+				"Además de rutinas para la comunicación punto a punto, las librerías suelen proporcionar rutinas para entrada/salida distribuida-->1"
+			]				
+		},
+		{
+			"enunciado": "En relación al modelo de memoria compartida, ¿cuál de las siguientes afirmaciones es correcta?",
+			"respuestas": [
+				"El programador es responsable de gestionar la coherencia y consistencia de la memoria-->0",
+				"El programador es responsable de gestionar la sincronización-->0",
+				"La política de planificación de iteraciones en threads es gestionada por el kernel del sistema operativo con la ayuda del compilador-->0",
+				"Siempre requiere una paralelización a grano grueso de la aplicación-->1"
+			]
+		},
+		{
+			"enunciado": "En relación al modelo de memoria distribuida, ¿cuál de las siguientes afirmaciones es correcta?",
+			"respuestas": [
+				"La frecuencia y tamaño de las comunicaciones definen las prestaciones que debería tener la red de interconexión-->1",
+				"Este perfil de aplicaciones se desarrolla por medio de OpenCCS-->0",
+				"Este perfil de aplicaciones se desarrolla por medio de Globus-->0",
+				"MPI ofrece sólo rutinas de comunicación bloqueantes-->0"
+			]
+		},
+		{
+			"enunciado": "En relación al modelo de memoria compartida basado en directivas, ¿cuál de las siguientes afirmaciones es correcta?",
+			"respuestas": [
+				"No permite paralelismo incremental-->0",
+				"Todos los inhibidores de la paralelización de un bucle se pueden eliminar-->0",
+				"Los direccionamientos indirectos los resuelve directamente el compilador-->0",
+				"Ninguna de las anteriores-->1"
+			]
+		}
+	]
+}

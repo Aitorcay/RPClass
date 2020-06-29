@@ -5,45 +5,6 @@
 <head><th:block th:replace="fragments/head :: header"/>
 	<title>RPC - Profesor</title>	
 	<style>
-		.droptarget {
-			float: left; 
-			width: 175px; 
-			height: 15px;
-			padding: 5px;
-			border: 1px solid #aaaaaa;
-			text-align: center;
-			vertical-align: middle;
-			cursor: move;
-		}
-		.classBox {
-			float: left; 
-			width: 300px; 
-			height: 800px;
-			padding: 5px;
-			border: 1px solid #aaaaaa;
-			vertical-align: middle;
-		}
-	    div.scroll { 
-	        margin:4px, 4px; 
-	        padding:4px; 
-	        width: 250px; 
-	        height: 300px; 
-	        overflow-x: hidden; 
-	        overflow-x: auto; 
-	        text-align:justify; 
-	    }
-	    div.team { 
-			width: 200px; 
-			height: 300px;
-			margin: 5px;
-			padding: 5px;
-	        overflow-x: hidden; 
-	        overflow-x: auto; 
-	        text-align:justify; 
-	    }
-        .container {
-	        display: flex;
-	    }
 	</style>
 </head>
 <body>
@@ -51,60 +12,140 @@
 		Nav goes here
 	</nav>
 	
-	<div class="container">
+	<div style="height:100%;" id="container" class="container">
 	<div class="main">
-		
-		<h1>
-			Vista de clases
-		</h1>
+
+		<nav style="background-color: rgba(255, 255, 255, 0.75);">
+
+			<h1 style="margin-left:25px;margin-right:25px;">Mis clases</h1>
+
+			<form th:action="@{/admin/{id}/class(id=${session.u.id})}" method="POST" enctype="multipart/form-data">
+				Añadir nueva clase <input type="file" name="classfile" required />
+				<button style="margin:5px;" type="submit">Crear clase</button>
+			</form>
+	
+		</nav>
 
 		<div class="container">
-			<div>
-				<form th:action="@{/admin/{id}/class(id=${session.u.id})}" method="POST" enctype="multipart/form-data">
-					Fichero de clase <input type="file" name="classfile"/>
-					<button type="submit">Crear clase</button>
-				</form>
+			
+			<div style="flex:0.2 1 0;" class="scroll">		
+				<form style="margin:5px" th:if="${classList}" th:each="c: ${classList}" 
+						th:action="@{/admin/{id}/class/{classId}(id=${session.u.id},classId=${c.id})}">
+					<button type="submit" th:text="${c.name}">Mis clases</button>
+  				</form>			
 
-				<div class="classBox">
-					<th>Clase de prueba</th>
-					<div th:if="${users}" class="scroll" ondrop="drop(event, this)" ondragover="allowDrop(event)">
-						<div th:each="u: ${users}" class="droptarget" ondragstart="drag(event)" draggable="true" th:id="${u.id}" 
-						th:text="${u.username + ' - ' + u.firstName + ' ' + u.lastName}"></div>
-					</div>	
-					<form th:unless="${users == null && stClass == null}" method="POST" 
-							th:action="@{/admin/{id}/class/createQR(id=${session.u.id}, userList=${users}, newClass=${stClass})}">
-						<button type="submit">Descargar QR de acceso</button>
-	  				</form>  
-				</div>
+  				<h4 style="text-align: left;" th:unless="${classList.size()} > 0" th:text="'No existen clases creadas'"></h4>	
+
 			</div>
-			<div>
-				<div class="container">
-					<label for="quantity">Número de equipos:</label>
-					<input type="number" id="quantity" name="quantity" min="1" max="99">
-					<button onclick="createTeams(document.getElementById('quantity').value)">Añadir equipos</button>
-				</div>					
 
-				<div class="scroll" id="scrollTeam" style="width:750px">
-					<div class="container">
-					<table class="adminTable" id="teamTable" name="teamTable">
-					<tr id="teamList"><th>Lista de equipos</th>
-					</table>
+			<div style="flex:0.25 1 0;" th:if="${stClass}" class="scroll">
+
+				<h3 style="text-align:center;" th:text="${stClass.name}">Clase de prueba</h3>
+	
+				<div th:if="${users}" style="padding:25px;text-align:center;" ondrop="drop(event, this)" ondragover="allowDrop(event)" class="scroll">
+					<div style="margin: 5px" th:each="u: ${users}" class="droptarget" ondragstart="drag(event)" draggable="true" th:id="${u.id}" 
+						th:text="${u.firstName + ' ' + u.lastName}"></div>
 				</div>	
+
+				<div th:if="${students}" class="scroll">	
+					<p style="text-align: left;" th:each="s: ${students}" th:text="'- ' + ${s.firstName + ' ' + s.lastName}">Alumn@
+					</p>						
+				</div>
+
+				<div style="text-align:center;">
+					<form th:if="${students} AND ${stClass}"
+							th:action="@{/admin/{id}/class/{classId}/createQR(id=${session.u.id},classId=${stClass.id})}">
+						<button style="margin:10px"type="submit">Descargar QR de acceso</button>
+	  				</form> 					
+				</div> 
+
 			</div>
+
+			<div style="flex:0.3 1 0;" th:if="${teams}" class="scroll">
+
+				<h3 style="text-align:center;">Lista de equipos</h3>
+
+				<div style="text-align:center;" class="scroll">
+
+					<div th:if="${teams}" th:each="t: ${teams}">
+						<h3 style="text-align:center;" th:text="${t.teamName}">Equipo X</h3>
+						<p style="text-align: left;" th:each="s: ${t.members}" th:text="'- ' + ${s.username + ': ' + s.firstName + ' ' + s.lastName}">Alumn@</p>
+					</div>
+
+  					<h4 th:unless="${teams.size()} > 0" th:text="'No existen equipos creados para esta clase'"></h4>	
+
+				</div>
+
+			</div>
+
+			<div th:if="${users}" style="flex:0.55 1 0;" class="scroll">
+
+				<h3 style="text-align:center;">Lista de equipos</h3>
+
+				<div th:if="${users}" style="text-align:center;margin:10px">
+					<label for="quantity">Número de equipos:</label>
+					<input type="number" id="quantity" name="quantity" min="1" max="99" defaultValue="2">
+					<button onclick="createTeams(document.getElementById('quantity').value)">Añadir equipos</button>
+				</div>
+
+				<div style="margin: 0px" class="scroll">
+					<table style="padding: 10px" class="adminTable" id="teamTable" name="teamTable">
+					</table>	
+				</div>
+
+				<div style="text-align:center;margin:10px">
+					<form th:if="${users} AND ${teams == null}" method="POST" class="smallform" 
+							th:action="@{/admin/{id}/class/{classId}/createTeams(id=${session.u.id},classId=${stClass.id})}">
+						<input type="hidden" name="teamComp" id="teamComp"/>
+						<input type="hidden" name="numTeams" id="numTeams"/>
+						<button type="submit" onclick="setTeamsInfo()">Guardar equipos</button>
+	  				</form>		
+				</div>			
+
+			</div>
+
+			<div th:if="${stClass} AND ${students}" style="flex:0.25 1 0;" class="scroll">
+
+				<h3 style="text-align:center;">Lista de pruebas</h3>
+
+				<div style="text-align:center;">
+
+					<form style="margin:10px;text-align:center;" th:action="@{/admin/{id}/class/{classId}/addContest(id=${session.u.id},classId=${stClass.id})}" 
+						method="POST" enctype="multipart/form-data">
+						<input type="file" name="contestfile" required/>
+						<button type="submit">Crear prueba</button>
+					</form>
+
+				</div>
+
+				<div style="flex:1;text-align:center;" class="scroll">	
+					<form style="text-align:center;" th:if="${contests}" th:each="c: ${contests}" th:action="@{/admin/{id}/contest/{contestId}(id=${session.u.id},contestId=${c.id})}">
+							<button style="margin:5px;" type="submit" th:text="${c.name}">Prueba</button>
+		  			</form>			
+
+  					<h4 th:unless="${contests.size()} > 0" th:text="'No existen pruebas creadas de momento.'"></h4>			
+				</div>
+
+			</div>
+
 		</div>
 			
 	</div>
 	</div>	
+		
+	<footer th:replace="fragments/footer.html :: footer">
+		Footer goes here
+	</footer>
 
 	<script type="text/javascript">
 
 		function createTeams(quantity) {
-			var i;
 			var container;
 			var title;
 			var scroll;
 			var wrapper;
 			var row;
+			var i;
 
 			//wrapper = document.getElementById('teamTable');
 			//wrapper = document.getElementById('scrollTeam');
@@ -112,25 +153,52 @@
 			for (i = 0; i < quantity; i++) {
 				wrapper = document.createElement('div');
 
-				title = document.createElement('h2');
-  				title.innerHTML = "Equipo " + i.toString();
+				title = document.createElement('h3');
+  				title.innerHTML = "Equipo " + "" + (i+1);
+  				title.setAttribute("style", "text-align:center;");
 
   				container = document.createElement('div');
   				container.setAttribute("class", "team");
-
-  				scroll = document.createElement('div');
-  				scroll.setAttribute("class", "scroll");
-  				scroll.setAttribute("ondrop", "drop(event, this)");
-  				scroll.setAttribute("ondragover", "allowDrop(event)");
+  				container.setAttribute("overflow", "scroll");
+  				container.setAttribute("ondrop", "drop(event, this)");
+  				container.setAttribute("ondragover", "allowDrop(event)");
 
   				team = document.createElement('td');
+  				row = document.createElement('tr');
 
-  				container.appendChild(scroll);
   				wrapper.appendChild(title);
   				wrapper.appendChild(container);
   				team.appendChild(wrapper);
-  				document.getElementById('teamList').appendChild(team);
+  				row.appendChild(team)
+  				document.getElementById('teamTable').appendChild(team);
   			}
+		}
+
+		function getTeamComp() {
+			var teams= document.getElementById('teamTable').querySelectorAll(".team");
+			var members;
+			var teamComp = [];
+			var i;
+			var j;
+
+			for (i = 0; i < teams.length; i++) {
+				members = teams[i].querySelectorAll(".droptarget");
+				for (j=0; j < members.length; j++) {
+					teamComp.push(members[j].innerHTML + "-->" + i);
+				}
+			} 
+
+			return teamComp;
+		}
+
+		function getNumTeams() {
+			var numTeams = document.getElementById('quantity').value;
+			return numTeams;
+		}
+
+		function setTeamsInfo() {
+			document.getElementById("teamComp").value = getTeamComp();
+			document.getElementById("numTeams").value = getNumTeams();
 		}
 
 		function allowDrop(ev) {

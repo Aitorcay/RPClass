@@ -5,13 +5,16 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.EnumMap;
 import java.util.Map;
- 
+
 import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -20,17 +23,39 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import es.ucm.fdi.iw.constants.ConstantsClass;
+import es.ucm.fdi.iw.LocalData;
+import es.ucm.fdi.iw.constants.ConstantsPdfFile;
+import es.ucm.fdi.iw.model.User;
+
+/**
+ * Generates a QR code with a link to the profile of a student
+ * @author aitorcay
+ */
 
 public class QrGenerator {
 	
 	private static final Logger log = LogManager.getLogger(QrGenerator.class);
 	
-	public static void generateQrCode(String id, String username) {
-		String url = ConstantsClass.USER_URL + id;
-		String QrPath = ConstantsClass.QR_IMG + username + "." + ConstantsClass.PNG;
-		int size = ConstantsClass.QR_IMG_SIZE;
-		String fileType = ConstantsClass.PNG;
+	
+	/**
+	 * Genera el código QR de acceso para un usuario
+	 * 
+	 * @param id		id del usuario
+	 * @param username	nombre de usario
+	 * @throws UnknownHostException
+	 */
+	public static void generateQrCode(User user) throws UnknownHostException {
+		InetAddress inetAddress = InetAddress.getLocalHost();		
+		String url = "http://" + inetAddress.getHostAddress() + ":" +ConstantsPdfFile.PORT + "/token/" + user.getToken();
+		int size = ConstantsPdfFile.QR_IMG_SIZE;
+		String fileType = ConstantsPdfFile.PNG;
+		
+		File directory = new File(ConstantsPdfFile.QR_DIR);
+	    if (! directory.exists()){
+	        directory.mkdir();
+	    }
+	    
+	    String QrPath = ConstantsPdfFile.QR_DIR + ConstantsPdfFile.QR_IMG + user.getUsername() + "." + ConstantsPdfFile.PNG;
 		File myFile = new File(QrPath);
 		
 		try {
@@ -64,13 +89,13 @@ public class QrGenerator {
 			}			
 			
 			ImageIO.write(image, fileType, myFile);
-			
+						
 		} catch (WriterException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		log.info("\n\nYou have successfully created QR Code for user {}", id);
+		log.info("\n\nYou have successfully created QR Code for user {}", user.getId());
 	}
 }

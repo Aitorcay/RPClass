@@ -4,34 +4,26 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
-
 /**
- * A question can be included in several contest. It can be answered with different options. Each option has
- * an associated score.
+ * Each question has several options to be answered
  *
  * @author aitorcay
  */
 
 @Entity
-//@NamedQueries({
-//	@NamedQuery(name="Question.byContest",
-//	query="SELECT q FROM Question q "
-//			+ "WHERE q.contest = :contestId")
-//})
-
 public class Answer {
-	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String text;
 	private double score;
+
+	@ManyToOne(targetEntity = Question.class)
 	private Question question;
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public long getId() {
 		return id;
 	}
@@ -56,8 +48,6 @@ public class Answer {
 		this.score = score;
 	}
 	
-	@ManyToOne(targetEntity = Question.class)
-	@JoinColumn(name = "answers")
 	public Question getQuestion() {
 		return question;
 	}
@@ -69,7 +59,8 @@ public class Answer {
 	@Override
 	public String toString() {
 		StringBuilder stb = new StringBuilder();
-		
+
+		stb.append("--- OPCIÓN ---\n");
 		stb.append( this.text + " | " + Double.toString(this.score) + " ptos\n");
 		
 	    return stb.toString();

@@ -11,50 +11,70 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import es.ucm.fdi.iw.constants.ConstantsClass;
+import es.ucm.fdi.iw.constants.Constants;
+import es.ucm.fdi.iw.constants.ConstantsPdfFile;
 import es.ucm.fdi.iw.model.Answer;
 import es.ucm.fdi.iw.model.Contest;
 import es.ucm.fdi.iw.model.Question;
+
+/**
+ * Processes a JSON file and creates a new contest
+ * @author aitorcay
+ */
 
 public class ContestFileReader {
 	
 	private static final Logger log = LogManager.getLogger(ContestFileReader.class);
 	
-	@Autowired
-	private static PasswordEncoder passwordEncoder;
-
+	/**
+	 * Procesa la información de un fichero JSON y crea una nueva prueba
+	 * 
+	 * @param jsonContest	contenido del fichero JSON
+	 * @return				prueba creada con la información procesada
+	 */
 	public static Contest readContestFile(String jsonContest) {
 		Contest contest = new Contest();
 		
 		try {
 			JSONObject jContest = new JSONObject(jsonContest);
-			contest.setName(jContest.getString("nombreConcurso"));
+			contest.setName(jContest.getString(Constants.NOMBRE_CONCURSO));
+			contest.setEnabled((byte) 0);
+			contest.setComplete((byte) 0);
+			contest.setChecked((byte)0);
 			
-			JSONArray jQuestionsList = jContest.getJSONArray("preguntas");
+			JSONArray jQuestionsList = jContest.getJSONArray(Constants.PREGUNTAS);
 			JSONObject jQuestion;
-			
+
 			List<Question> questionList = new ArrayList<>();
 			List<Answer> answerList;
-			List<Contest> contestList = new ArrayList<>();
-			Question question;
-			Answer answer;
-			String[] answerParams;
 			
-			contestList.add(contest);
+			JSONArray answerInput;
+			String[] answerData;
+			Question question;
+			Answer answer;			
+			Answer empty;
+			
 			for (int i = 0; i < jQuestionsList.length(); i++) {
 				jQuestion = jQuestionsList.getJSONObject(i);
 				question = new Question();
-				question.setText(jQuestion.getString("enunciado"));
-				question.setContest(contestList);
+				question.setText(jQuestion.getString(Constants.ENUNCIADO));
+				question.setContest(contest);
 				
 				answerList = new ArrayList<>();
-				for(int j = 0; j < ConstantsClass.NUM_ANSWERS; j++) {
-					answerParams = jQuestion.getString(Integer.toString(j+1)).split(ConstantsClass.SCORE_SEPARATOR);
-					log.info(answerParams);
+				empty = new Answer();
+				empty.setQuestion(question);
+				empty.setText(Constants.NO_ANSWER);
+				empty.setScore(0);
+				answerList.add(empty);
+				
+				answerInput = jQuestion.getJSONArray(Constants.RESPUESTAS);
+				for(int j = 0; j < answerInput.length(); j++) {
+					answerData = answerInput.getString(j).split(Constants.SEPARATOR);
+					log.info(answerInput);
 					answer = new Answer();
 					answer.setQuestion(question);
-					answer.setText(answerParams[0]);
-					answer.setScore(Double.parseDouble(answerParams[1]));
+					answer.setText(answerData[0]);
+					answer.setScore(Double.parseDouble(answerData[1]));
 					answerList.add(answer);
 				}
 				

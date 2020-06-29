@@ -5,68 +5,190 @@
 <head><th:block th:replace="fragments/head :: header"/>
 	<title>RPC - Profesor</title>
 	<style>
-		.contestBox {
+		.classBox {
 			float: left; 
-			width: 500px; 
+			width: 300px; 
 			height: 800px;
 			padding: 5px;
 			border: 1px solid #aaaaaa;
 			vertical-align: middle;
 		}
-	    div.scroll { 
-	        margin:4px, 4px; 
-	        padding:4px; 
-	        width: 400px; 
-	        height: 300px; 
-	        overflow-x: hidden; 
-	        overflow-x: auto; 
-	        text-align:justify; 
-	    }
-        .container {
-	        display: flex;
-	    }
+		table, tr, td {
+			background-color: rgba(255, 255, 255, 0.75);
+			border-collapse: collapse;
+			padding: 7px;
+		}
+		tr {
+			border: 1px solid #aaaaaa;
+		}
+		.resultsTable {
+			border: 1px solid #aaaaaa;
+			background-color: rgba(255, 255, 255, 0.75);
+			border-collapse: collapse;
+			padding: 7px;
+		}
+		.resultsTable tr {
+			border: 1px solid #aaaaaa;
+			background-color: rgba(255, 255, 255, 0.75);
+			border-collapse: collapse;
+			padding: 7px;
+		}
+		.resultsTable td {
+			border: 1px solid #aaaaaa;
+			background-color: rgba(255, 255, 255, 0.75);
+			border-collapse: collapse;
+			padding: 7px;
+		}
+
 	</style>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> 
 </head>
 <body>
 	<nav th:replace="fragments/nav.html :: nav">
 		Nav goes here
 	</nav>
 	
-	<div class="container">
+	<div style="height:100%;" class="container">
 	<div class="main">
-		
-		<h1>
-			Vista de concursos
-		</h1>
+
+		<nav style="background-color: rgba(255, 255, 255, 0.75);">
+
+			<h1 style="margin-left:25px;margin-right:25px;">Mis pruebas</h1>
+	
+		</nav>
 
 		<div class="container">
-			<div>
-				<form th:action="@{/admin/{id}/contest(id=${session.u.id})}" method="POST" enctype="multipart/form-data">
-					Fichero de concurso <input type="file" name="contestfile"/>
-					<button type="submit">Crear concurso</button>
-				</form>
-				<div class="contestBox" th:if=${contest}>
-					<th th:text="${contest.name}"></th>
-					<div class="scroll">
-						<div th:unles="${contest.questions == null}" th:each="q: ${contest.questions}">
-							<th th:text="${q.text}"></th>
-							<table th:unless="${q.answers == null}">
-								<tr  th:each="a: ${q.answers}">
-									<td th:text="${a.text}"></td>
-									<td th:text="${a.score}"></th>
-								</tr>
-							</table>
-						</div>
-					</div>
-				</div>
+
+			<div style="flex:0.2 1 0;" class="scroll">		
+				<form style="margin:5px" th:if="${contestList}" th:each="c: ${contestList}" 
+						th:action="@{/admin/{id}/contest/{contestId}(id=${session.u.id},contestId=${c.id})}">
+					<button type="submit" th:text="${c.stClass.name} + ' - ' + ${c.name}">Concurso</button>
+  				</form>					
+
+  				<h4 style="text-align: left;" th:unless="${contestList.size()} > 0" th:text="'No existen pruebas creadas de momento.'"></h4>	
 			</div>
+
+			<div th:if=${contest} style="flex:0.35 1 0;text-align:center;" class="scroll">
+				<h2 style="text-align:center;" th:text="${contest.name}"></h2>
+
+				<div thi:if="${contest.questions}" th:each="q: ${contest.questions}" 
+					style="background-color: rgba(255, 255, 255, 0.75);padding:10px;text-align:left">
+					<p th:text="${q.text}"></p>
+					<table style="margin:10px;" align="center" th:if="${q.answers}">
+						<tr th:each="a: ${q.answers}" th:if="${a.text} != 'Sin responder'">
+							<td th:text="${a.text}"></td>
+							<td>&rarr;</td>
+							<td th:text="${a.score}"></th>
+						</tr>
+					</table>			
+				</div>
+
+			</div>	
+
+			<div th:if=${contest} style="display:flex;flex-direction:column;flex:0.45 1 0;text-align:center;padding:0px" class="scroll" >	
+				<div align="left" style="display:block">
+
+					<nav th:if="${contest.complete}" style="margin-left: 20px">
+						<h3 th:if="${contest.startDate} AND ${contest.endDate}"
+							th:text="'Estado: TERMINADO (' + 
+								${#dates.format(contest.startDate, 'dd-MM-yyyy HH:mm')} + ' / ' + ${#dates.format(contest.endDate, 'dd-MM-yyyy HH:mm')} + ')'"></h3>
+
+						<form style="margin:5px" th:action="@{/admin/{id}/contest/{contestId}/ranking(id=${session.u.id},contestId=${contest.id})}">
+							<button type="submit">Ver clasificación</button>
+		  				</form>	
+					</nav>
+					<nav th:unless="${contest.complete}" style="margin-left: 20px">
+						<h3 th:text="${contest.enabled} == 1 ? 'Estado: ACTIVO (' + ${#dates.format(contest.startDate, 'dd-MM-yyyy HH:mm')} + ')'
+							: 'Estado: INACTIVO'"></h3>
+
+						<form method="POST" th:action="@{/admin/{id}/contest/{contestId}/toggleContest(id=${session.u.id},contestId=${contest.id})}">
+							<button type="submit">Activar/ desactivar</button>
+		  				</form>	
+					</nav>
+					<nav th:unless="${contest.complete}" style="margin-left: 20px"  class="container">
+						<h3 th:text="${resultList.size()} + '/' + ${students.size()} + ' estudiantes han participado'"></h3>
+
+						<form style="margin: 5px" method="POST" th:action="@{/admin/{id}/contest/{contestId}/completeContest(id=${session.u.id},contestId=${contest.id})}">
+							<button type="submit">Terminar concurso</button>
+		  				</form>	
+					</nav>		
+
+				</div>	
+				<div class="container">
+					<div class="scroll" style="padding: 0px;margin-top:5px;margin-bottom:5px">
+						<table class="resultsTable" style="margin: 15px">
+							<tr style="background-color:lightgray;">
+								<td> Usuario </td>
+								<td th:each="i: ${#numbers.sequence(0, contest.questions.size()-1)}" th:text="'P' + ${i+1}"> Usuario </td>
+								<td> Puntuación </td>
+								<td> Resultado </td>
+							</tr>
+							<tr th:each="r: ${resultList}">
+								<td style="text-align: left" th:text="${r.user.lastName + ', ' + r.user.firstName}"></td>
+								<td th:each="a: ${r.answers}" th:text="${a.score}"></td>
+								<td th:text="${r.score}"></td>
+								<td th:if="${r.passed} AND !${r.perfect}" th:text="'SUPERADO'"></td>
+								<td th:if="${r.passed} AND ${r.perfect}" th:text="'PERFECTO'"></td>
+								<td th:unless="${r.passed}" th:text="'FALLIDO'"></td>
+							</tr>
+						</table>
+					</div>
+				</div>	
+				<div class="scroll" style="padding:0px;margin-top:5px;margin-bottom:5px">
+					<div class="container">
+						<div th:if="${stats}" th:each="s, iStatS : ${stats}" th:id="'g' + ${iStatS.index}"></div>
+					</div>
+				</div>					
+			</div>		
+
 		</div>
 		
 	</div>
 	</div>
+		
+	<footer th:replace="fragments/footer.html :: footer">
+		Footer goes here
+	</footer>
 
-	<script type="text/javascript">
+	<script th:inline="javascript">
 
+		google.charts.load('current', {'packages':['corechart']});
+		google.charts.setOnLoadCallback(drawGraphs);
+
+
+		function drawGraphs() {
+			/*<![CDATA[*/
+			var i;
+			var j;
+			var statList = /*[[${stats}]]*/
+			var questionStats;
+			var answerStats;
+			var answer;
+			var chartData;
+			var data;
+			var options;
+			var chart;
+
+			for(i=0; i < statList.length; i++) {
+				chartData = [];
+				chartData.push(["Respuesta", "Estudiantes"]);
+				questionStats = statList[i].split("|");
+				answerStats = questionStats[1].split(";");
+
+				for(j=0; j < answerStats.length; j++) {
+					answer = answerStats[j].split("-->");
+					chartData.push([answer[0], parseInt(answer[1])]);
+				}
+
+				console.log(chartData);
+
+				data = google.visualization.arrayToDataTable(chartData);
+				options = {'title':questionStats[0],'sliceVisibilityThreshold':0};
+				chart = new google.visualization.PieChart(document.getElementById('g' + i));
+				chart.draw(data, options);
+			}
+			/*]]>*/
+		}
 	</script>
 </body>
 </html>

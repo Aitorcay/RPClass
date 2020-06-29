@@ -8,9 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
@@ -32,16 +32,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import es.ucm.fdi.iw.LocalData;
+import es.ucm.fdi.iw.model.Achievement;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.User.Role;
 
 /**
  * User-administration controller
  * 
- * @author mfreire
+ * @author aitorcay
  */
 @Controller()
-@RequestMapping("user")
+@RequestMapping("user/{id}")
 public class UserController {
 	
 	private static final Logger log = LogManager.getLogger(UserController.class);
@@ -55,14 +56,40 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	@GetMapping("/{id}")
+	/**
+	 * Vista del perfil del estudiante
+	 * 
+	 * @param id		id del usuario loggeado
+	 * @param model		modelo que contendrá la información
+	 * @param session	sesión asociada al usuario
+	 * @return			vista a mostrar
+	 */
+	@GetMapping("")
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
 		User u = entityManager.find(User.class, id);
 		model.addAttribute("user", u);
-		return "user";
+		
+		//Lista de logros asociados a un estudiante
+		List<Achievement> achievements = entityManager.createNamedQuery("Achievement.byStudent", Achievement.class)
+				.setParameter("userId", u.getId()).getResultList();
+		model.addAttribute("achievements", achievements);
+		
+		return "profile";
 	}
 
-	@PostMapping("/{id}")
+	/**
+	 * Actualiza la información de un usuario
+	 * 
+	 * @param response	para gestión de las peticiones HTTP
+	 * @param id		id del usuario loggeado
+	 * @param edited	usuario con la información actualizada
+	 * @param pass2		confirmación de la contraseña
+	 * @param model		modelo que contendrá la información
+	 * @param session	sesión asociada al usuario
+	 * @return			vista a mostrar
+	 * @throws IOException
+	 */
+	@PostMapping("")
 	@Transactional
 	public String postUser(
 			HttpServletResponse response,
@@ -73,6 +100,7 @@ public class UserController {
 		User target = entityManager.find(User.class, id);
 		model.addAttribute("user", target);
 		
+		//Comprobación de permisos
 		User requester = (User)session.getAttribute("u");
 		if (requester.getId() != target.getId() &&
 				! requester.hasRole(Role.ADMIN)) {			
@@ -85,10 +113,18 @@ public class UserController {
 			target.setPassword(passwordEncoder.encode(edited.getPassword()));
 		}		
 		target.setUsername(edited.getUsername());
-		return "user";
+		return "profile";
 	}	
 	
-	@GetMapping(value="/{id}/photo")
+	/**
+	 * Obtiene la foto de perfil de un usuario
+	 * 
+	 * @param id	id del usuario loggeado
+	 * @param model	modelo que contendrá la información
+	 * @return		foto de perfil
+	 * @throws IOException
+	 */
+	@GetMapping(value="/photo")
 	public StreamingResponseBody getPhoto(@PathVariable long id, Model model) throws IOException {		
 		File f = localData.getFile("user", ""+id);
 		InputStream in;
@@ -106,27 +142,23 @@ public class UserController {
 		};
 	}
 	
-	@GetMapping("/{id}/profile")
-	public String profile(Model model) {
-		return "profile";
-	}
-
-	@GetMapping("/{id}/team")
-	public String team(Model model) {
-		return "team";
-	}
-	
-	@GetMapping("/{id}/rankings")
-	public String rankings(Model model) {
-		return "rankings";
-	}	
-	
-	@PostMapping("/{id}/photo")
+	/**
+	 * Actualiza la foto de perfil de un usuario
+	 * 
+	 * @param response	para gestión de las peticiones HTTP
+	 * @param photo		nueva foto
+	 * @param id		id del usuario loggeado
+	 * @param model		modelo que contendrá la información
+	 * @param session	sesión asociada al usuario
+	 * @return			vista a mostrar
+	 * @throws IOException
+	 */
+	@PostMapping("/photo")
 	public String postPhoto(
 			HttpServletResponse response,
 			@RequestParam("photo") MultipartFile photo,
-			@PathVariable("id") String id, Model model, HttpSession session) throws IOException {
-		User target = entityManager.find(User.class, Long.parseLong(id));
+			@PathVariable("id") long id, Model model, HttpSession session) throws IOException {
+		User target = entityManager.find(User.class, id);
 		model.addAttribute("user", target);
 		
 		// check permissions
@@ -135,11 +167,11 @@ public class UserController {
 				! requester.hasRole(Role.ADMIN)) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN, 
 					"No eres administrador, y éste no es tu perfil");
-			return "user";
+			return "profile";
 		}
 		
 		log.info("Updating photo for user {}", id);
-		File f = localData.getFile("user", id);
+		File f = localData.getFile("user", Long.toString(id));
 		if (photo.isEmpty()) {
 			log.info("failed to upload photo: emtpy file?");
 		} else {
@@ -152,6 +184,33 @@ public class UserController {
 			}
 			log.info("Successfully uploaded photo for {} into {}!", id, f.getAbsolutePath());
 		}
-		return "user";
+		return getUser(id, model, session);
+	}	
+	
+	/**
+	 * Obtiene la foto de un logro
+	 * 
+	 * @param achKey	clave del logro
+	 * @param model		modelo que contendrá la información
+	 * @return			foto de perfil
+	 * @throws IOException
+	 */
+	@GetMapping(value="/{achKey}/achievement")
+	public StreamingResponseBody getAchievementPhoto(@PathVariable("achKey") String achKey,
+			Model model) throws IOException {		
+		File f = localData.getFile("achievementUser", ""+achKey);
+		InputStream in;
+		if (f.exists()) {
+			in = new BufferedInputStream(new FileInputStream(f));
+		} else {
+			in = new BufferedInputStream(getClass().getClassLoader()
+					.getResourceAsStream("static/img/unknown-user.jpg"));
+		}
+		return new StreamingResponseBody() {
+			@Override
+			public void writeTo(OutputStream os) throws IOException {
+				FileCopyUtils.copy(in, os);
+			}
+		};
 	}
 }
