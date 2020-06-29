@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head><th:block th:replace="fragments/head :: header"/>
+	<title>RPC - Profesor</title>	
+	<style>
+	</style>
+</head>
+<body>
+	<nav th:replace="fragments/nav.html :: nav">
+		Nav goes here
+	</nav>
+	
+	<div style="height:100%;" id="container" class="container">
+	<div class="main">
+
+		<nav style="background-color: rgba(255, 255, 255, 0.75);">
+
+			<h1 style="margin-left:25px;margin-right:25px;">Mis clases</h1>
+
+			<form th:action="@{/admin/{id}/class(id=${session.u.id})}" method="POST" enctype="multipart/form-data">
+				Añadir nueva clase <input type="file" name="classfile" required />
+				<button style="margin:5px;" type="submit">Crear clase</button>
+			</form>
+	
+		</nav>
+
+		<div class="container">
+			
+			<div style="flex:0.2 1 0;" class="scroll">		
+				<form style="margin:5px" th:if="${classList}" th:each="c: ${classList}" 
+						th:action="@{/admin/{id}/class/{classId}(id=${session.u.id},classId=${c.id})}">
+					<button type="submit" th:text="${c.name}">Mis clases</button>
+  				</form>			
+
+  				<h4 style="text-align: left;" th:unless="${classList.size()} > 0" th:text="'No existen clases creadas'"></h4>	
+
+			</div>
+
+			<div style="flex:0.25 1 0;" th:if="${stClass}" class="scroll">
+
+				<h3 style="text-align:center;" th:text="${stClass.name}">Clase de prueba</h3>
+	
+				<div th:if="${users}" style="padding:25px;text-align:center;" ondrop="drop(event, this)" ondragover="allowDrop(event)" class="scroll">
+					<div style="margin: 5px" th:each="u: ${users}" class="droptarget" ondragstart="drag(event)" draggable="true" th:id="${u.id}" 
+						th:text="${u.firstName + ' ' + u.lastName}"></div>
+				</div>	
+
+				<div th:if="${students}" class="scroll">	
+					<p style="text-align: left;" th:each="s: ${students}" th:text="'- ' + ${s.firstName + ' ' + s.lastName}">Alumn@
+					</p>						
+				</div>
+
+				<div style="text-align:center;">
+					<form th:if="${students} AND ${stClass}"
+							th:action="@{/admin/{id}/class/{classId}/createQR(id=${session.u.id},classId=${stClass.id})}">
+						<button style="margin:10px"type="submit">Descargar QR de acceso</button>
+	  				</form> 					
+				</div> 
+
+			</div>
+
+			<div style="flex:0.3 1 0;" th:if="${teams}" class="scroll">
+
+				<h3 style="text-align:center;">Lista de equipos</h3>
+
+				<div style="text-align:center;" class="scroll">
+
+					<div th:if="${teams}" th:each="t: ${teams}">
+						<h3 style="text-align:center;" th:text="${t.teamName}">Equipo X</h3>
+						<p style="text-align: left;" th:each="s: ${t.members}" th:text="'- ' + ${s.username + ': ' + s.firstName + ' ' + s.lastName}">Alumn@</p>
+					</div>
+
+  					<h4 th:unless="${teams.size()} > 0" th:text="'No existen equipos creados para esta clase'"></h4>	
+
+				</div>
+
+			</div>
+
+			<div th:if="${users}" style="flex:0.55 1 0;" class="scroll">
+
+				<h3 style="text-align:center;">Lista de equipos</h3>
+
+				<div th:if="${users}" style="text-align:center;margin:10px">
+					<label for="quantity">Número de equipos:</label>
+					<input type="number" id="quantity" name="quantity" min="1" max="99" defaultValue="2">
+					<button onclick="createTeams(document.getElementById('quantity').value)">Añadir equipos</button>
+				</div>
+
+				<div style="margin: 0px" class="scroll">
+					<table style="padding: 10px" class="adminTable" id="teamTable" name="teamTable">
+					</table>	
+				</div>
+
+				<div style="text-align:center;margin:10px">
+					<form th:if="${users} AND ${teams == null}" method="POST" class="smallform" 
+							th:action="@{/admin/{id}/class/{classId}/createTeams(id=${session.u.id},classId=${stClass.id})}">
+						<input type="hidden" name="teamComp" id="teamComp"/>
+						<input type="hidden" name="numTeams" id="numTeams"/>
+						<button type="submit" onclick="setTeamsInfo()">Guardar equipos</button>
+	  				</form>		
+				</div>			
+
+			</div>
+
+			<div th:if="${stClass} AND ${students}" style="flex:0.25 1 0;" class="scroll">
+
+				<h3 style="text-align:center;">Lista de pruebas</h3>
+
+				<div style="text-align:center;">
+
+					<form style="margin:10px;text-align:center;" th:action="@{/admin/{id}/class/{classId}/addContest(id=${session.u.id},classId=${stClass.id})}" 
+						method="POST" enctype="multipart/form-data">
+						<input type="file" name="contestfile" required/>
+						<button type="submit">Crear prueba</button>
+					</form>
+
+				</div>
+
+				<div style="flex:1;text-align:center;" class="scroll">	
+					<form style="text-align:center;" th:if="${contests}" th:each="c: ${contests}" th:action="@{/admin/{id}/contest/{contestId}(id=${session.u.id},contestId=${c.id})}">
+							<button style="margin:5px;" type="submit" th:text="${c.name}">Prueba</button>
+		  			</form>			
+
+  					<h4 th:unless="${contests.size()} > 0" th:text="'No existen pruebas creadas de momento.'"></h4>			
+				</div>
+
+			</div>
+
+		</div>
+			
+	</div>
+	</div>	
+		
+	<footer th:replace="fragments/footer.html :: footer">
+		Footer goes here
+	</footer>
+
+	<script type="text/javascript">
+
+		function createTeams(quantity) {
+			var container;
+			var title;
+			var scroll;
+			var wrapper;
+			var row;
+			var i;
+
+			//wrapper = document.getElementById('teamTable');
+			//wrapper = document.getElementById('scrollTeam');
+
+			for (i = 0; i < quantity; i++) {
+				wrapper = document.createElement('div');
+
+				title = document.createElement('h3');
+  				title.innerHTML = "Equipo " + "" + (i+1);
+  				title.setAttribute("style", "text-align:center;");
+
+  				container = document.createElement('div');
+  				container.setAttribute("class", "team");
+  				container.setAttribute("overflow", "scroll");
+  				container.setAttribute("ondrop", "drop(event, this)");
+  				container.setAttribute("ondragover", "allowDrop(event)");
+
+  				team = document.createElement('td');
+  				row = document.createElement('tr');
+
+  				wrapper.appendChild(title);
+  				wrapper.appendChild(container);
+  				team.appendChild(wrapper);
+  				row.appendChild(team)
+  				document.getElementById('teamTable').appendChild(team);
+  			}
+		}
+
+		function getTeamComp() {
+			var teams= document.getElementById('teamTable').querySelectorAll(".team");
+			var members;
+			var teamComp = [];
+			var i;
+			var j;
+
+			for (i = 0; i < teams.length; i++) {
+				members = teams[i].querySelectorAll(".droptarget");
+				for (j=0; j < members.length; j++) {
+					teamComp.push(members[j].innerHTML + "-->" + i);
+				}
+			} 
+
+			return teamComp;
+		}
+
+		function getNumTeams() {
+			var numTeams = document.getElementById('quantity').value;
+			return numTeams;
+		}
+
+		function setTeamsInfo() {
+			document.getElementById("teamComp").value = getTeamComp();
+			document.getElementById("numTeams").value = getNumTeams();
+		}
+
+		function allowDrop(ev) {
+			ev.preventDefault();
+		}
+
+		function drag(ev) {
+			ev.dataTransfer.setData("text", ev.target.id);
+		}
+
+		function drop(ev, el) {
+			ev.preventDefault();
+			var data = ev.dataTransfer.getData("text");
+			el.appendChild(document.getElementById(data));
+		}
+
+	</script>
+</body>
+</html>

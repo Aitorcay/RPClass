@@ -3,40 +3,176 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head><th:block th:replace="fragments/head :: header"/>
-	<title>Admin</title>
-	<link rel="stylesheet" th:href="@{/css/admin.css}" href="css/admin.css" type="text/css"/>
+	<title>RPC - Profesor</title>	
+	<style>
+	</style>
 </head>
 <body>
 	<nav th:replace="fragments/nav.html :: nav">
 		Nav goes here
 	</nav>
 	
-	<div class="container">
+	<div style="height:100%;" id="container" class="container">
 	<div class="main">
-	<h1 th:text="#{admin.welcome}">Ojo solo admines</h1>			
-	
-	<h4>Configuración</h4>
-	<ul>
-	<li>Directorio local para archivos de usuario: <span th:text="${basePath}">tal</span>
-	<li>Perfiles activos: <span th:each="a: ${activeProfiles}" th:text="${a}">tal</span>
-	</ul>
-		<h4>Usuarios (👤)</h4>
-	
-	<table class="adminTable">
-	<tr><th>Nombre & Enlace<th>Deshabilitar (🔒) ó Habilitar (🔓)
-	<tr th:each="u: ${users}">
-		<td><a th:href="@{/user/{id}(id=${u.id})}" th:text="${u.username}">Pepe</a>
-		<td><form method="post" th:action="@{/admin/toggleuser(id=${u.id})}">
-			<button th:text="${u.enabled eq 1 ? '🔓 → 🔒' : '🔒 → 🔓'}" type="submit">🗑</button>
-		</form>
-	</tr>
-	</table>
-	
+
+		<nav style="background-color: rgba(255, 255, 255, 0.75);">
+			<h1 style="margin-left:25px;margin-right:25px;">Guía de uso</h1>
+		</nav>
+
+		<div class="container">
+			
+			<div style="flex:0.3 1 0;margin:20px;text-align: left;display:block;" class="scroll">
+
+				<h3>Creación de clases</h3>			
+
+  				<a style="display: block;" th:href="@{{id}/downloadFile(id=${session.u.id},fileName='plantilla - clase.json')}" title="Descargar plantilla de clase" download="plantilla_clase.json">Descargar plantilla de clase</a>			
+
+  				<a style="display: block;" th:href="@{{id}/downloadFile(id=${session.u.id},fileName='ejemplo - clase.json')}" title="Descargar ejemplo de clase" download="ejemplo_clase.json">Descargar ejemplo de clase</a>	
+
+  				<a style="display: block;" target="_blank" href="https://github.com/Aitorcay/RPClass/wiki/Creaci%C3%B3n-de-una-clase">Guía de creación de clases</a>
+
+  				<h4>Instrucciones: </h4>
+  				<ul>
+  					<li>Descargar el fichero con la plantilla</li>
+  					<li>Editar el nombre de la clase y los nombres y apellidos de los estudiantes</li>
+  					<li>Para incorporar nuevos estudiantes añadirlos a continuación del que ya se proporciona</li>
+  					<li>Una vez generado el fichero cargarlo desde la barra en la vista de 'Mis clases'</li>
+  					<li>RECUERDA: cada estudiante debe separarse del siguiente con una coma </li>
+  				</ul>
+
+			</div>
+
+			<div style="flex:0.37 1 0;margin:20px;text-align: left;" class="scroll">	
+
+				<h3>Creación de pruebas</h3>		
+
+  				<a style="display: block;" th:href="@{{id}/downloadFile(id=${session.u.id},fileName='plantilla - prueba.json')}" title="Descargar plantilla de prueba" download="plantilla_prueba.json">Descargar plantilla de prueba</a>		
+
+  				<a style="display: block;" th:href="@{{id}/downloadFile(id=${session.u.id},fileName='ejemplo - prueba.json')}" title="Descargar ejemplo de prueba" download="ejemplo_prueba.json">Descargar ejemplo de prueba</a>	
+
+  				<a style="display: block;" target="_blank" href="https://github.com/Aitorcay/RPClass/wiki/Creaci%C3%B3n-de-una-prueba">Guía de creación de pruebas</a>	
+				
+  				<h4>Instrucciones: </h4>
+  				<ul>
+  					<li>Descargar el fichero con la plantilla</li>
+  					<li>Editar el nombre de la prueba, los enunciados de las preguntas y las respuestas</li>
+  					<li>La puntuación de la respuesta representa el grado de acierto</li>
+  						<ul>
+  							<li>1 → correcto. 100% </li>
+  							<li>0 → incorrecto. 0% </li>
+  							<li>(0 a 1) → respuestas parcialmente correctas </li>
+  							<li>[-1 a 0) → respuestas con penalización </li>
+  						</ul>
+  					<li>Una vez generado el fichero cargarlo desde el apartado 'Lista de concursos' que aparece al seleccionar una clase</li>
+  					<li>RECUERDA: cada pregunta y respuesta debe separarse de la siguiente con una coma </li>
+  				</ul>
+
+			</div>
+
+			<div style="flex:0.33 1 0;margin:20px;text-align: left;" class="scroll">	
+
+				<h3>Gestión de pruebas</h3>	
+
+  				<a style="display: block;" target="_blank" href="https://github.com/Aitorcay/RPClass/wiki/Gesti%C3%B3n-de-las-pruebas">Guía de gestión de pruebas</a>		
+
+				<h4>Instrucciones: </h4>
+  				<ul>
+  					<li>Por defecto las pruebas está inhabilitadas tras su creación</li>
+  					<li>Para que los estudiantes puedan acceder es necesario habilitar la prueba</li>
+  					<li>A medida que los estudiantes participen se recogerán sus resultados</li>
+  					<li>Las gráficas muestran para cada pregunta el número de veces que han sido escogidas las respuestas</li>
+  					<li>Cuando se ponga fin a una prueba se generará la correspondiente clasificación</li>
+  				</ul>
+				
+			</div>
+
+		</div>
+			
 	</div>
-	</div>
+	</div>	
 		
 	<footer th:replace="fragments/footer.html :: footer">
 		Footer goes here
 	</footer>
+
+	<script type="text/javascript">
+
+		function createTeams(quantity) {
+			var container;
+			var title;
+			var scroll;
+			var wrapper;
+			var row;
+			var i;
+
+			//wrapper = document.getElementById('teamTable');
+			//wrapper = document.getElementById('scrollTeam');
+
+			for (i = 0; i < quantity; i++) {
+				wrapper = document.createElement('div');
+
+				title = document.createElement('h3');
+  				title.innerHTML = "Equipo " + "" + (i+1);
+  				title.setAttribute("style", "text-align:center;");
+
+  				container = document.createElement('div');
+  				container.setAttribute("class", "team");
+  				container.setAttribute("overflow", "scroll");
+  				container.setAttribute("ondrop", "drop(event, this)");
+  				container.setAttribute("ondragover", "allowDrop(event)");
+
+  				team = document.createElement('td');
+  				row = document.createElement('tr');
+
+  				wrapper.appendChild(title);
+  				wrapper.appendChild(container);
+  				team.appendChild(wrapper);
+  				row.appendChild(team)
+  				document.getElementById('teamTable').appendChild(team);
+  			}
+		}
+
+		function getTeamComp() {
+			var teams= document.getElementById('teamTable').querySelectorAll(".team");
+			var members;
+			var teamComp = [];
+			var i;
+			var j;
+
+			for (i = 0; i < teams.length; i++) {
+				members = teams[i].querySelectorAll(".droptarget");
+				for (j=0; j < members.length; j++) {
+					teamComp.push(members[j].innerHTML + "-->" + i);
+				}
+			} 
+
+			return teamComp;
+		}
+
+		function getNumTeams() {
+			var numTeams = document.getElementById('quantity').value;
+			return numTeams;
+		}
+
+		function setTeamsInfo() {
+			document.getElementById("teamComp").value = getTeamComp();
+			document.getElementById("numTeams").value = getNumTeams();
+		}
+
+		function allowDrop(ev) {
+			ev.preventDefault();
+		}
+
+		function drag(ev) {
+			ev.dataTransfer.setData("text", ev.target.id);
+		}
+
+		function drop(ev, el) {
+			ev.preventDefault();
+			var data = ev.dataTransfer.getData("text");
+			el.appendChild(document.getElementById(data));
+		}
+
+	</script>
 </body>
 </html>

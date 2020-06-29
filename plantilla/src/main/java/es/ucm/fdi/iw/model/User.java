@@ -2,24 +2,25 @@ package es.ucm.fdi.iw.model;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import javax.persistence.OneToMany;
 
 /**
- * A user; can be an Admin, a Student, or a Teacher
+ * A user; can be a Student or a Teacher
  *
  * Teacher can create classes and contest and organize students into groups
+ * Students can participate in contest and get points for their teams and themselves
  *
  * @author aitorcay
  */
@@ -29,57 +30,114 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 	@NamedQuery(name="User.byUsername",
 	query="SELECT u FROM User u "
 			+ "WHERE u.username = :username AND u.enabled = 1"),
+	@NamedQuery(name="User.byToken",
+	query="SELECT u FROM User u "
+			+ "WHERE u.token = :token AND u.enabled = 1"),			
 	@NamedQuery(name="User.hasUsername",
 	query="SELECT COUNT(u) "
 			+ "FROM User u "
-			+ "WHERE u.username = :username")
+			+ "WHERE u.username = :username"),
+	@NamedQuery(name="User.byClass",
+	query="SELECT u FROM User u JOIN u.stClass st "
+			+ "WHERE u.roles = 'USER' "
+			+ "AND u.enabled = 1 "
+			+ "AND st.id = :classId "
+			+ "ORDER BY u.lastName ASC"),
+	@NamedQuery(name="User.numStudents",
+	query="SELECT COUNT(u) FROM User u JOIN u.stClass st "
+			+ "WHERE u.roles = 'USER' "
+			+ "AND u.enabled = 1 "
+			+ "AND st.id = :classId"),
+	@NamedQuery(name="User.userInClass",
+	query="SELECT u FROM User u JOIN u.stClass st "
+			+ "WHERE u.firstName = :firstName "
+			+ "AND u.lastName = :lastName "
+			+ "AND st.id = :classId "
+			+ "AND u.enabled = 1 "),
+	@NamedQuery(name="User.byTeam",
+	query="SELECT u FROM User u JOIN u.team t "
+			+ "WHERE u.roles = 'USER' "
+			+ "AND u.enabled = 1 "
+			+ "AND t.id = :teamId "
+			+ "ORDER BY u.elo DESC"),
+	@NamedQuery(name="User.ranking",
+	query="SELECT u FROM User u JOIN u.stClass st "
+			+ "WHERE u.roles = 'USER' "
+			+ "AND u.enabled = 1 "
+			+ "AND st.id = :classId "
+			+ "ORDER BY u.elo DESC")
 })
 
 public class User {
 
-	private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
 	public enum Role {
 		USER,			// used for logged-in, non-priviledged users
-		ADMIN,			// used for maximum priviledged users
-		
+		ADMIN,			// used for maximum priviledged users		
 		MODERATOR,		// remove or add roles as needed
 	}
 	
 	// do not change these fields
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)	
 	private long id;
 	private String username;
+
+	@Column(nullable = false)
 	private String password;
+
+	private String token; // used to login via qr code
+
 	private String roles; // split by ',' to separate roles
 	private byte enabled;
 	
-	private String image;
-	private String color;
-	private int elo;
-	private StClass stClass;
-	
 	// application-specific fields
-		private String firstName;
-		private String lastName;
+	private String firstName;
+	private String lastName;
+	
+	// achievement/ranking fields
+	private int elo;
+	private int correct;
+	private int passed;
+	private int perfect;	
+	private int top;	
+	
+	@ManyToOne
+	private StTeam team;
+
+	@ManyToOne
+	private StClass stClass;
+	// admin fields
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "teacher_id")
+	private List<StClass> stClassList;
+	@OneToMany
+	@JoinColumn(name = "teacher_id")
+	private List<Contest> contestList;
+	// user fields
+	@OneToMany
+	@JoinColumn(name = "user_id")
+	private List<Result> resultList;
+	@OneToMany(targetEntity = Achievement.class)
+	@JoinColumn(name = "student_id")
+	private List<Achievement> achievementUser;
 
 	/**
 	 * Checks whether this user has a given role.
 	 * @param role to check
 	 * @return true iff this user has that role.
 	 */
-	public boolean hasRole(Role role) {
-		String roleName = role.name();
-		return Arrays.stream(roles.split(","))
-				.anyMatch(r -> r.equals(roleName));
+	public boolean hasRole(final Role role) {
+		final String roleName = role.name();
+		return Arrays.stream(roles.split(",")).anyMatch(r -> r.equals(roleName));
 	}
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	public long getId() {
 		return id;
 	}
-	
-	public void setId(long id) {
+
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -87,53 +145,47 @@ public class User {
 		return username;
 	}
 
-	public void setUsername(String username) {
+	public void setUsername(final String username) {
 		this.username = username;
-	}	
+	}
 
-	@Column(nullable = false)
 	public String getPassword() {
 		return password;
 	}
 
+	public void createAndSetRandomToken(final int length) {
+		final char[] chars = "ABCDEFGHJKLMNPQabcdefghijkmnopq123456789".toCharArray();
+		final StringBuilder token = new StringBuilder();
+		final Random r = new Random();
+		for (int i = 0; i < length; i++) {
+			token.append(chars[r.nextInt(chars.length)]);
+		}
+		this.token = token.toString();
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(final String token) {
+		this.token = token;
+	}
+
 	/**
-	 * Sets the password to an encoded value. 
-	 * You can generate encoded passwords using {@link #encodePassword}.
-	 * call only with encoded passwords - NEVER STORE PLAINTEXT PASSWORDS
+	 * Sets the password to an encoded value. NEVER STORE
+	 * PLAINTEXT PASSWORDS
+	 * 
 	 * @param encodedPassword to set as user's password
 	 */
-	public void setPassword(String encodedPassword) {
+	public void setPassword(final String encodedPassword) {
 		this.password = encodedPassword;
-	}
-
-	/**
-	 * Tests a raw (non-encoded) password against the stored one.
-	 * @param rawPassword to test against
-	 * @return true if encoding rawPassword with correct salt (from old password)
-	 * matches old password. That is, true iff the password is correct  
-	 */
-	public boolean passwordMatches(String rawPassword) {
-		return encoder.matches(rawPassword, this.password);
-	}
-
-	/**
-	 * Encodes a password, so that it can be saved for future checking. Notice
-	 * that encoding the same password multiple times will yield different
-	 * encodings, since encodings contain a randomly-generated salt.
-	 * @param rawPassword to encode
-	 * @return the encoded password (typically a 60-character string)
-	 * for example, a possible encoding of "test" is 
-	 * $2y$12$XCKz0zjXAP6hsFyVc8MucOzx6ER6IsC1qo5zQbclxhddR1t6SfrHm
-	 */
-	public static String encodePassword(String rawPassword) {
-		return encoder.encode(rawPassword);
 	}
 
 	public String getRoles() {
 		return roles;
 	}
 
-	public void setRoles(String roles) {
+	public void setRoles(final String roles) {
 		this.roles = roles;
 	}
 
@@ -141,56 +193,15 @@ public class User {
 		return enabled;
 	}
 
-	public void setEnabled(byte enabled) {
+	public void setEnabled(final byte enabled) {
 		this.enabled = enabled;
-	}
-
-	public static BCryptPasswordEncoder getEncoder() {
-		return encoder;
-	}
-
-	public static void setEncoder(BCryptPasswordEncoder encoder) {
-		User.encoder = encoder;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
-	public int getElo() {
-		return elo;
-	}
-
-	public void setElo(int elo) {
-		this.elo = elo;
-	}
-
-	@ManyToOne(targetEntity = StClass.class)
-	public StClass getStClass() {
-		return stClass;
-	}
-
-	public void setStClass(StClass stClass) {
-		this.stClass = stClass;
 	}
 
 	public String getFirstName() {
 		return firstName;
 	}
 
-	public void setFirstName(String firstName) {
+	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
 	}
 
@@ -198,9 +209,112 @@ public class User {
 		return lastName;
 	}
 
-	public void setLastName(String lastName) {
+	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
-	
-	
+
+	public int getElo() {
+		return elo;
+	}
+
+	public void setElo(final int elo) {
+		this.elo = elo;
+	}
+
+	public int getCorrect() {
+		return correct;
+	}
+
+	public void setCorrect(final int correct) {
+		this.correct = correct;
+	}
+
+	public int getPassed() {
+		return passed;
+	}
+
+	public void setPassed(final int passed) {
+		this.passed = passed;
+	}
+
+	public int getPerfect() {
+		return perfect;
+	}
+
+	public void setPerfect(final int perfect) {
+		this.perfect = perfect;
+	}
+
+	public int getTop() {
+		return top;
+	}
+
+	public void setTop(final int top) {
+		this.top = top;
+	}
+
+	public StTeam getTeam() {
+		return team;
+	}
+
+	public void setTeam(final StTeam team) {
+		this.team = team;
+	}
+
+	public StClass getStClass() {
+		return stClass;
+	}
+
+	public void setStClass(final StClass stClass) {
+		this.stClass = stClass;
+	}
+
+
+	public List<StClass> getStClassList() {
+		return stClassList;
+	}
+
+	public void setStClassList(final List<StClass> stClassList) {
+		this.stClassList = stClassList;
+	}
+
+
+	public List<Contest> getContests() {
+		return contestList;
+	}
+
+	public void setContests(final List<Contest> contests) {
+		this.contestList = contests;
+	}
+
+
+	public List<Result> getResultList() {
+		return resultList;
+	}
+
+	public void setResultList(final List<Result> resultList) {
+		this.resultList = resultList;
+	}
+
+
+	public List<Achievement> getAchievementUser() {
+		return achievementUser;
+	}
+
+	public void setAchievementUser(final List<Achievement> achivementUser) {
+		this.achievementUser = achivementUser;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder stb = new StringBuilder();
+		
+		stb.append("--- USUARIO ---\n");
+		stb.append("Nombre: " + this.getFirstName() + "\n");
+		stb.append("Apellidos: " + this.getLastName() + "\n");
+		stb.append("Usuario: " + this.getUsername() + "\n");
+		stb.append("Elo: " + Double.toString(this.getElo()) + "\n");
+		
+	    return stb.toString();
+	}
 }

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head><th:block th:replace="fragments/head :: header"/>
+	<title>RPC - Estudiante</title>
+	<style>
+	</style>
+</head>
+<body>
+	<nav th:replace="fragments/nav.html :: nav">
+		Nav goes here
+	</nav>
+	
+	<div class="container">
+	<div class="main">		
+		
+		<nav style="background-color: rgba(255, 255, 255, 0.75);">
+
+			<h1 style="padding-left:25px;margin-right:25px;" th:text="${'Bienvenid@ ' + user.username}"></h1>
+
+			<img height="50" width="50" th:src="@{/user/{id}/photo(id=${user.id})}">
+
+			<form th:action="@{/user/{id}/photo(id=${user.id})}" method="POST" enctype="multipart/form-data">
+				Nueva foto <input type="file" name="photo"/>
+				<button type="submit">Actualizar</button>
+			</form>
+	
+		</nav>
+
+		<div th:if="(${session.u.id} eq ${user.id}) or ${user.hasRole('ADMIN')}" class="container">
+
+<!--/*
+			<div style="flex:0.25 1 0;" class="scroll"> 
+
+				<h3 style="text-align:center;margin-bottom:15px">Cambiar información de usuario</h3>
+
+				<form id="usermod" class="smallform" th:action="@{/user/{id}(id=${user.id})}" method="POST">		
+
+					<label for="username">Usuario</label>
+					<input name="username" id="username" required placeholder="username" th:value="${user.username}"/>
+					
+					<label for="password">Contraseña</label>
+					<input type="password" id="password" required name="password" placeholder="Contraseña"/>
+					<label for="pass2">(repetida)</label>
+					<input type="password" id="pass2" required name="pass2" placeholder="Confirmación"/>
+
+					<button style="margin-top: 5px;" type="submit">Modificar</button>
+
+				</form>
+			</div>
+*/-->	
+
+			<div style="flex:0.5 1 0;" class="scroll"> 
+
+				<h3 style="text-align:center;margin-bottom:15px">Notificaciones</h3>
+
+				<div class="container" style="background-color: rgba(255, 255, 255, 0.75);padding:10px">
+					
+					<a class="not2"></a>
+
+					<div style="margin-left: 20px">
+						<span style="display: block;font-weight:bold" th:text="'28-06-2020 16:00'">Fecha</span>
+						<span style="display: block;font-weight:bold" th:text="'Mensajes sin leer'">Asunto</span>
+						<span style="display: block;" th:text="'Se han publicado 6 mensaje nuevos en el foro ``Dudas y preguntas´´'">Descripción</span>
+					</div>
+				</div>
+
+				<div class="container" style="background-color: rgba(255, 255, 255, 0.75);padding:10px">
+					
+					<a class="not1"></a>
+
+					<div style="margin-left: 20px">
+						<span style="display: block;font-weight:bold" th:text="'25-06-2020 12:00'">Fecha</span>
+						<span style="display: block;font-weight:bold" th:text="'Nueva prueba'">Asunto</span>
+						<span style="display: block;" th:text="'Nueva prueba ``Test código binario´´ añadida a tus pruebas'">Descripción</span>
+					</div>
+				</div>
+
+				<div class="container" style="background-color: rgba(255, 255, 255, 0.75);padding:10px">
+					
+					<a class="not3"></a>
+
+					<div style="margin-left: 20px">
+						<span style="display: block;font-weight:bold" th:text="'24-06-2020 13:00'">Fecha</span>
+						<span style="display: block;font-weight:bold" th:text="'Prueba finalizada'">Asunto</span>
+						<span style="display: block;" th:text="'Ya están disponibles los resultados de la prueba ``Test puertas lógicas´´'">Descripción</span>
+					</div>
+				</div>
+
+				<div class="container" style="background-color: rgba(255, 255, 255, 0.75);padding:10px">
+					
+					<a class="not4"></a>
+
+					<div style="margin-left: 20px">
+						<span style="display: block;font-weight:bold" th:text="'22-06-2020 10:00'">Fecha</span>
+						<span style="display: block;font-weight:bold" th:text="'Prueba completada'">Asunto</span>
+						<span style="display: block;" th:text="'Se han registrado tus respuestas para la prueba ``Test puertas lógicas´´'">Descripción</span>
+					</div>
+				</div>
+				
+			</div>
+
+			<div style="flex:0.5 1 0;" class="scroll"> 
+
+				<h3 style="text-align:center;margin-bottom:15px">Logros</h3>
+
+				<div class="container" th:if="${achievements}" style="background-color: rgba(255, 255, 255, 0.75);padding:10px" th:each="a: ${achievements}">
+					
+					<img height="64" width="64" th:src="@{/user/{id}/{achKey}/achievement(id=${user.id},achKey=${a.goal.key})}">
+
+					<div style="margin-left: 20px">
+						<span style="display: block;" th:text="'Objetivo: ' + ${a.currentObjective()}">Objetivo</span>
+						<span style="display: block;" th:text="'Nivel: ' + ${a.level}">Nivel</span>
+						<span style="display: block;" th:text="'Progreso: ' + ${a.progress} + '/' + ${a.currentLevel()}">Progreso</span>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	
+		<footer th:replace="fragments/footer.html :: footer">
+			Footer goes here
+		</footer>
+
+	</div>
+	</div>
+	
+<script>
+	// esto es algo feo, y se podría sacar a un JS externo
+	document.addEventListener("DOMContentLoaded", () => {
+		// selecciona los campos de contraseña
+		let ps = document.querySelectorAll('#usermod > input[type="password"]')
+		// cada vez que cambie uno de ellos...
+		ps[0].oninput = ps[0].onchange = ps[1].oninput = ps[1].onchange = () => {
+			// dice que si no son iguales, el segundo no es válido
+			ps[1].setCustomValidity(ps[0].value === ps[1].value ? 
+					"" : "Ambas contraseñas tienen que coincidir");
+		}
+	});
+
+</script>	
+
+</body>
+</html>
