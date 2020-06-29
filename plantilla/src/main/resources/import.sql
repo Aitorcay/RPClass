@@ -111,7 +111,7 @@ INSERT INTO goal(id,description,levels,target,key) VALUES (
 );
 
 INSERT INTO goal(id,description,levels,target,key) VALUES (
-	2, 'Acumulad XXX respuestas correctas', '50,250,500,1000,1500', 'team_id', 'CORRECT'
+	2, 'Acumulad XXX respuestas correctas', '50,250,500,1000,1500', 'TEAM', 'CORRECT'
 );
 
 INSERT INTO goal(id,description,levels,target,key) VALUES (
@@ -127,11 +127,11 @@ INSERT INTO goal(id,description,levels,target,key) VALUES (
 );
 
 INSERT INTO goal(id,description,levels,target,key) VALUES (
-	6, 'Acumulad una puntuación de equipo de XXX', '2000,3000,5000,7500,10000', 'team_id', 'ELO'
+	6, 'Acumulad una puntuación de equipo de XXX', '2000,3000,5000,7500,10000', 'TEAM', 'ELO'
 );
 
 INSERT INTO goal(id,description,levels,target,key) VALUES (
-	7, 'Acumulad XXX trofeos', '1,3,5,10,15', 'team_id', 'TOP'
+	7, 'Acumulad XXX trofeos', '1,3,5,10,15', 'TEAM', 'TOP'
 );
 
 INSERT INTO goal(id,description,levels,target,key) VALUES (
